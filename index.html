@@ -3,471 +3,534 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📰 영어 신문 학습</title>
+  <title>📰 English News Study</title>
   <style>
-    /* ===== 공책 스타일 배경 ===== */
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Playfair+Display:wght@700&family=DM+Mono&display=swap');
+
+    /* ===== 리셋 ===== */
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ===== 공책 배경 — 다크 크림 + 세로줄 키치 ===== */
+    :root {
+      --bg:        #f5f0e8;
+      --line:      rgba(180, 160, 120, 0.28);
+      --red-line:  rgba(210, 90, 80, 0.45);
+      --ring:      #c8bda8;
+      --ring-bg:   #e8e0d0;
+      --accent:    #d45a3a;
+      --accent2:   #3a6a8a;
+      --accent3:   #5a8a5a;
+      --dark:      #1e1a14;
+      --ink:       #2a2218;
+      --muted:     #7a6e60;
+      --border:    #c0aa88;
+      --card-bg:   #fdfaf5;
+      --panel-l:   #1e1a14;
+      --panel-r:   #1a2e1a;
+      --tab-act:   #f5f0e8;
+    }
 
     body {
       min-height: 100vh;
-      font-family: 'Noto Sans KR', 'Georgia', serif;
-      background-color: #fdf9f0;
-      background-image: linear-gradient(#c8d8e8 1px, transparent 1px);
-      background-size: 100% 32px;
-      background-attachment: fixed;
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: var(--bg);
+      /* 가로 줄 + 왼쪽 여백 수직선 */
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, transparent 68px, var(--red-line) 68px, var(--red-line) 70px, transparent 70px);
+      background-size: 100% 36px, 100% 100%;
       position: relative;
     }
 
-    body::before {
-      content: '';
+    /* 링 구멍 */
+    .rings {
       position: fixed;
-      left: 60px;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: rgba(200, 80, 80, 0.35);
-      z-index: 0;
-    }
-
-    .ring-holes {
-      position: fixed;
-      left: 18px;
-      top: 0;
-      bottom: 0;
-      width: 28px;
+      left: 14px;
+      top: 0; bottom: 0;
+      width: 32px;
       display: flex;
       flex-direction: column;
       justify-content: space-around;
-      padding: 60px 0;
-      z-index: 10;
+      padding: 80px 0;
+      z-index: 20;
       pointer-events: none;
     }
-    .ring-holes span {
+    .rings span {
       display: block;
-      width: 22px;
-      height: 22px;
+      width: 24px; height: 24px;
       border-radius: 50%;
-      background: #e8dcc8;
-      border: 2px solid #c4b49a;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+      background: var(--ring-bg);
+      border: 2.5px solid var(--ring);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.18), 0 1px 0 rgba(255,255,255,0.6);
     }
 
-    .page-wrapper {
-      max-width: 1440px;
+    /* ===== 레이아웃 ===== */
+    .wrapper {
+      max-width: 1480px;
       margin: 0 auto;
-      padding: 0 24px 80px 82px;
+      padding: 0 28px 100px 88px;
       position: relative;
       z-index: 1;
     }
 
     /* ===== 헤더 ===== */
     header {
-      padding: 30px 0 18px;
-      border-bottom: 3px double #b0945a;
-      margin-bottom: 20px;
+      padding: 32px 0 20px;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 22px;
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 14px;
     }
-    .header-left h1 {
-      font-size: 1.9rem;
-      color: #3d2b1f;
-      font-family: 'Georgia', serif;
+    .h-left h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.1rem;
+      color: var(--ink);
+      letter-spacing: -0.5px;
     }
-    .header-left h1 span { color: #c05050; }
-    .header-left p {
-      font-size: 0.82rem;
-      color: #7a6a5a;
-      margin-top: 4px;
+    .h-left h1 em {
+      font-style: normal;
+      color: var(--accent);
+      border-bottom: 3px solid var(--accent);
     }
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+    .h-left p { font-size: 0.8rem; color: var(--muted); margin-top: 5px; letter-spacing: 0.3px; }
+
+    .h-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    .date-chip {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      background: var(--ink);
+      color: #f5f0e8;
+      padding: 5px 14px;
+      border-radius: 2px;
+      letter-spacing: 0.5px;
     }
-    .date-badge {
-      background: #c05050;
-      color: white;
-      padding: 4px 14px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: bold;
-    }
+
+    /* ===== 버튼 ===== */
     .btn {
-      padding: 8px 18px;
-      border-radius: 6px;
-      border: none;
-      font-size: 0.85rem;
+      padding: 8px 16px;
+      border-radius: 3px;
+      border: 1.5px solid transparent;
+      font-size: 0.82rem;
       cursor: pointer;
-      font-family: inherit;
-      transition: all 0.2s;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 700;
+      transition: all 0.18s;
+      letter-spacing: 0.2px;
     }
-    .btn-primary { background: #c05050; color: white; }
-    .btn-primary:hover { background: #a03030; }
-    .btn-secondary { background: #4a7a4a; color: white; }
-    .btn-secondary:hover { background: #2a5a2a; }
+    .btn-red   { background: var(--accent);  color: #fff; border-color: var(--accent); }
+    .btn-red:hover   { background: #b84428; border-color: #b84428; }
+    .btn-blue  { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+    .btn-blue:hover  { background: #2a4a6a; }
+    .btn-green { background: var(--accent3); color: #fff; border-color: var(--accent3); }
+    .btn-green:hover { background: #3a6a3a; }
     .btn-ghost {
       background: transparent;
-      color: #7a6a5a;
-      border: 1px solid #b0945a;
+      color: var(--muted);
+      border-color: var(--border);
     }
-    .btn-ghost:hover { background: #f0e8d8; }
+    .btn-ghost:hover { background: rgba(180,160,120,0.12); color: var(--ink); }
+    .btn-save {
+      background: #fff8e8;
+      color: #b87a10;
+      border: 1.5px solid #e0c060;
+      border-radius: 3px;
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.18s;
+    }
+    .btn-save:hover  { background: #e0c060; color: #fff; }
+    .btn-save.saved  { background: #e0c060; color: #fff; }
 
     /* ===== API 설정 박스 ===== */
-    .api-setup {
-      background: #fffbf0;
-      border: 1px solid #e8d8a0;
-      border-radius: 8px;
-      padding: 20px 24px;
+    .api-box {
+      background: #fff8ec;
+      border: 1.5px solid #e8d090;
+      border-radius: 4px;
+      padding: 18px 22px;
       margin-bottom: 20px;
     }
-    .api-setup h3 { color: #5a3a1a; margin-bottom: 6px; font-size: 1rem; }
-    .api-setup p { font-size: 0.82rem; color: #7a6a5a; line-height: 1.6; }
-    .api-setup-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .api-setup input {
-      flex: 1;
-      min-width: 200px;
+    .api-box h3 { font-size: 0.95rem; color: #5a3a10; margin-bottom: 6px; }
+    .api-box p  { font-size: 0.8rem; color: var(--muted); line-height: 1.65; }
+    .api-box a  { color: var(--accent3); }
+    .api-row    { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
+    .api-row input {
+      flex: 1; min-width: 220px;
       padding: 8px 12px;
-      border: 1px solid #c4b49a;
-      border-radius: 4px;
-      font-size: 0.85rem;
-      font-family: monospace;
+      border: 1.5px solid var(--border);
+      border-radius: 3px;
+      font-size: 0.83rem;
+      font-family: 'DM Mono', monospace;
       background: white;
+      color: var(--ink);
     }
-    .api-notice {
-      margin-top: 10px;
-      font-size: 0.78rem;
-      color: #9a8a7a;
-    }
+    .api-note { margin-top: 8px; font-size: 0.76rem; color: #b0a080; }
 
-    /* ===== 기사 탭 ===== */
-    .article-tabs {
+    /* ===== 상단 탭 바 ===== */
+    .top-tabs {
       display: flex;
-      gap: 6px;
+      gap: 0;
       margin-bottom: 0;
-      flex-wrap: wrap;
+      border-bottom: 2px solid var(--border);
     }
-    .tab-btn {
-      padding: 8px 20px;
-      border: 2px solid #b0945a;
-      border-bottom: none;
-      background: rgba(180, 148, 90, 0.08);
-      border-radius: 6px 6px 0 0;
+    .top-tab {
+      padding: 10px 24px;
       font-size: 0.84rem;
-      color: #7a6a5a;
+      font-weight: 700;
+      color: var(--muted);
       cursor: pointer;
-      transition: all 0.2s;
+      border: 1.5px solid transparent;
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+      background: transparent;
       font-family: inherit;
+      transition: all 0.15s;
+      letter-spacing: 0.3px;
     }
-    .tab-btn:hover { background: #f0e8d8; }
-    .tab-btn.active {
-      background: #fdf9f0;
-      color: #3d2b1f;
-      font-weight: bold;
-      border-color: #b0945a;
+    .top-tab:hover { color: var(--ink); background: rgba(180,160,120,0.1); }
+    .top-tab.active {
+      color: var(--ink);
+      background: var(--bg);
+      border-color: var(--border);
       position: relative;
       bottom: -2px;
       z-index: 2;
     }
+    .top-tab .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      font-size: 0.65rem;
+      padding: 1px 6px;
+      border-radius: 10px;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
 
-    /* ===== 메인 2단 영역 ===== */
+    /* ===== 기사 서브탭 ===== */
+    .art-tabs { display: flex; gap: 6px; padding: 14px 0 0; flex-wrap: wrap; }
+    .art-tab {
+      padding: 7px 18px;
+      border: 1.5px solid var(--border);
+      border-bottom: none;
+      background: rgba(180,160,120,0.07);
+      border-radius: 4px 4px 0 0;
+      font-size: 0.82rem;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+      transition: all 0.15s;
+    }
+    .art-tab:hover { background: rgba(180,160,120,0.15); }
+    .art-tab.active {
+      background: var(--bg);
+      color: var(--ink);
+      border-color: var(--border);
+      position: relative; bottom: -2px; z-index: 2;
+    }
+
+    /* ===== 메인 2단 ===== */
     .content-area {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0;
-      border: 2px solid #b0945a;
-      border-radius: 0 6px 6px 6px;
+      border: 1.5px solid var(--border);
+      border-radius: 0 4px 4px 4px;
       overflow: hidden;
       min-height: 78vh;
-      background: rgba(253, 249, 240, 0.98);
-      box-shadow: 4px 4px 16px rgba(0,0,0,0.08);
-      position: relative;
-      z-index: 1;
+      box-shadow: 3px 3px 0 rgba(0,0,0,0.06), 6px 6px 0 rgba(0,0,0,0.03);
     }
 
-    /* ===== 왼쪽: 기사 패널 ===== */
-    .article-panel {
-      border-right: 2px solid #b0945a;
-      display: flex;
-      flex-direction: column;
-    }
-    .panel-header {
-      background: #3d2b1f;
-      color: #fdf9f0;
+    /* 패널 공통 */
+    .p-header {
       padding: 11px 20px;
-      font-size: 0.82rem;
-      font-weight: bold;
-      letter-spacing: 0.8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
+      font-family: 'DM Mono', monospace;
     }
-    .panel-body {
-      padding: 24px 22px;
-      overflow-y: auto;
-      flex: 1;
-      max-height: calc(78vh - 44px);
-    }
+    .p-body { padding: 22px 20px; overflow-y: auto; flex: 1; max-height: calc(78vh - 44px); }
 
-    .article-title-en {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: #1a1a2e;
+    /* 왼쪽 */
+    .art-panel { border-right: 1.5px solid var(--border); display: flex; flex-direction: column; }
+    .art-panel .p-header { background: var(--panel-l); color: #c8bda8; }
+
+    /* 오른쪽 */
+    .study-panel { display: flex; flex-direction: column; }
+    .study-panel .p-header { background: var(--panel-r); color: #a8c8a8; }
+    .study-body { overflow-y: auto; flex: 1; max-height: calc(78vh - 44px); }
+
+    /* ===== 기사 패널 내부 ===== */
+    .art-title-en {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      color: var(--ink);
       line-height: 1.4;
       margin-bottom: 6px;
-      font-family: 'Georgia', serif;
     }
-    .article-title-kr {
-      font-size: 0.97rem;
-      color: #4a6a4a;
+    .art-title-kr {
+      font-size: 0.93rem;
+      color: var(--accent3);
       margin-bottom: 14px;
       padding-bottom: 14px;
-      border-bottom: 1px dashed #c4b49a;
-      line-height: 1.55;
-      font-style: italic;
+      border-bottom: 1px dashed var(--border);
+      line-height: 1.6;
     }
-    .article-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      font-size: 0.77rem;
-      color: #9a8a7a;
-      margin-bottom: 20px;
+    .art-meta {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      font-size: 0.74rem; color: var(--muted); margin-bottom: 18px;
     }
-    .article-meta span {
-      background: rgba(180,148,90,0.12);
-      padding: 2px 9px;
-      border-radius: 10px;
+    .art-meta span {
+      background: rgba(180,160,120,0.13);
+      padding: 2px 9px; border-radius: 2px;
+      font-family: 'DM Mono', monospace;
+    }
+    .art-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 18px;
     }
 
     .para-block {
-      margin-bottom: 22px;
-      padding: 14px 16px;
-      border-left: 3px solid #c8d8e8;
-      background: rgba(200, 216, 232, 0.07);
-      border-radius: 0 6px 6px 0;
-      transition: background 0.2s;
-    }
-    .para-block:hover { background: rgba(200, 216, 232, 0.14); }
-    .para-en {
-      font-size: 0.94rem;
-      line-height: 1.85;
-      color: #1a1a2e;
-      margin-bottom: 10px;
-    }
-    .para-kr {
-      font-size: 0.87rem;
-      line-height: 1.7;
-      color: #3a5a3a;
-      background: rgba(74, 122, 74, 0.07);
-      padding: 10px 12px;
-      border-radius: 4px;
-      border-left: 2px solid #5a9a5a;
-    }
-    .para-kr-label {
-      display: inline-block;
-      font-size: 0.68rem;
-      font-weight: bold;
-      background: #4a7a4a;
-      color: white;
-      padding: 1px 7px;
-      border-radius: 3px;
-      margin-bottom: 5px;
-    }
-
-    .source-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 18px;
-      color: #c05050;
-      font-size: 0.82rem;
-      text-decoration: none;
-      border: 1px solid #c05050;
-      padding: 7px 16px;
-      border-radius: 6px;
-      transition: all 0.2s;
-    }
-    .source-link:hover { background: #c05050; color: white; }
-
-    /* ===== 오른쪽: 학습 패널 ===== */
-    .study-panel {
-      display: flex;
-      flex-direction: column;
-    }
-    .study-body {
-      overflow-y: auto;
-      flex: 1;
-      max-height: calc(78vh - 44px);
-    }
-
-    .s-section { border-bottom: 1px dashed #d4c4a4; }
-    .s-section:last-child { border-bottom: none; }
-
-    .s-title {
-      padding: 14px 18px 10px;
-      font-size: 0.9rem;
-      font-weight: bold;
-      color: #2a2a1a;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      user-select: none;
+      margin-bottom: 20px;
+      padding: 13px 15px;
+      border-left: 3px solid rgba(180,160,120,0.4);
+      background: rgba(180,160,120,0.04);
+      border-radius: 0 4px 4px 0;
       transition: background 0.15s;
     }
-    .s-title:hover { background: rgba(180, 160, 100, 0.08); }
-    .s-title .arr { margin-left: auto; color: #9a8a7a; font-size: 0.8rem; transition: transform 0.2s; }
-    .s-title.collapsed .arr { transform: rotate(-90deg); }
+    .para-block:hover { background: rgba(180,160,120,0.09); border-left-color: var(--accent2); }
+    .para-en { font-size: 0.93rem; line-height: 1.88; color: var(--ink); margin-bottom: 10px; }
+    .para-kr {
+      font-size: 0.85rem; line-height: 1.72; color: #3a5a3a;
+      background: rgba(90,138,90,0.07);
+      padding: 9px 12px; border-radius: 3px;
+      border-left: 2px solid var(--accent3);
+    }
+    .kr-label {
+      display: inline-block;
+      font-size: 0.65rem; font-weight: 700;
+      background: var(--accent3); color: white;
+      padding: 1px 7px; border-radius: 2px; margin-bottom: 5px;
+      font-family: 'DM Mono', monospace; letter-spacing: 0.5px;
+    }
 
-    .s-body { padding: 2px 18px 16px; }
-    .s-body.hidden { display: none; }
+    .src-link {
+      display: inline-flex; align-items: center; gap: 5px;
+      margin-top: 16px; color: var(--accent); font-size: 0.79rem;
+      text-decoration: none;
+      border: 1.5px solid var(--accent);
+      padding: 6px 14px; border-radius: 3px;
+      transition: all 0.15s;
+    }
+    .src-link:hover { background: var(--accent); color: white; }
+
+    /* ===== 학습 패널 내부 ===== */
+    .s-sec { border-bottom: 1px dashed rgba(180,160,120,0.4); }
+    .s-sec:last-child { border-bottom: none; }
+    .s-hd {
+      padding: 13px 18px 9px;
+      font-size: 0.87rem; font-weight: 700; color: var(--ink);
+      display: flex; align-items: center; gap: 7px;
+      cursor: pointer; user-select: none; transition: background 0.13s;
+    }
+    .s-hd:hover { background: rgba(180,160,120,0.08); }
+    .s-hd .arr { margin-left: auto; color: var(--muted); font-size: 0.75rem; transition: transform 0.18s; }
+    .s-hd.collapsed .arr { transform: rotate(-90deg); }
+    .s-bd { padding: 2px 18px 15px; }
+    .s-bd.hidden { display: none; }
 
     /* 단어 카드 */
-    .word-card {
-      background: white;
-      border: 1px solid #ddd0b0;
-      border-radius: 7px;
-      padding: 12px 14px;
-      margin-bottom: 10px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      transition: box-shadow 0.2s, border-color 0.2s;
+    .wcard {
+      background: var(--card-bg);
+      border: 1.5px solid #ddd4bc;
+      border-radius: 4px;
+      padding: 11px 13px;
+      margin-bottom: 9px;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.04);
+      transition: box-shadow 0.15s, border-color 0.15s;
     }
-    .word-card:hover { border-color: #b0945a; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
-    .wc-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
-    .wc-word { font-size: 1.05rem; font-weight: bold; color: #1a1a2e; font-family: 'Georgia', serif; }
-    .wc-ph { font-size: 0.77rem; color: #8a7a6a; }
+    .wcard:hover { border-color: var(--border); box-shadow: 3px 3px 0 rgba(0,0,0,0.08); }
+    .wc-row { display: flex; align-items: baseline; gap: 7px; flex-wrap: wrap; margin-bottom: 3px; }
+    .wc-w { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--ink); font-weight: 700; }
+    .wc-ph { font-size: 0.74rem; color: var(--muted); font-family: 'DM Mono', monospace; }
     .wc-pos {
-      font-size: 0.67rem;
-      background: #e8f0d8;
-      color: #3a6a2a;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-weight: bold;
+      font-size: 0.64rem; font-weight: 700;
+      background: #e4f0da; color: #3a6a2a;
+      padding: 2px 7px; border-radius: 2px;
+      font-family: 'DM Mono', monospace;
     }
-    .wc-def { font-size: 0.88rem; color: #3d2b1f; margin: 4px 0 8px; }
+    .wc-def { font-size: 0.86rem; color: var(--ink); margin: 4px 0 7px; }
     .wc-ex {
-      font-size: 0.81rem;
-      font-style: italic;
-      color: #6a5a4a;
-      border-left: 2px solid #c8d8e8;
-      padding-left: 9px;
-      line-height: 1.6;
+      font-size: 0.79rem; font-style: italic; color: var(--muted);
+      border-left: 2px solid rgba(58,106,138,0.4);
+      padding-left: 8px; line-height: 1.6;
     }
-    .wc-ex-kr { font-size: 0.79rem; color: #4a7a4a; margin-top: 3px; font-style: normal; }
+    .wc-exkr { font-size: 0.77rem; color: var(--accent3); margin-top: 3px; font-style: normal; }
 
     /* 문법 카드 */
-    .gram-card {
+    .gcard {
       background: #fffbee;
-      border: 1px solid #ecd890;
-      border-radius: 7px;
-      padding: 12px 14px;
-      margin-bottom: 10px;
-    }
-    .gram-title { font-size: 0.92rem; font-weight: bold; color: #5a3a1a; margin-bottom: 8px; }
-    .gram-ex {
-      font-size: 0.88rem;
-      color: #1a1a2e;
-      background: white;
-      padding: 9px 11px;
+      border: 1.5px solid #e8d870;
       border-radius: 4px;
-      border-left: 3px solid #e8a020;
-      font-family: 'Georgia', serif;
-      line-height: 1.6;
-      margin-bottom: 8px;
+      padding: 11px 13px;
+      margin-bottom: 9px;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.04);
     }
-    .gram-hl { background: rgba(255,210,0,0.35); padding: 1px 2px; border-radius: 2px; }
-    .gram-exp { font-size: 0.83rem; color: #5a4a3a; line-height: 1.65; }
+    .gc-title { font-size: 0.88rem; font-weight: 700; color: #5a3a10; margin-bottom: 7px; }
+    .gc-ex {
+      font-size: 0.86rem; color: var(--ink);
+      background: white; padding: 8px 11px;
+      border-radius: 3px; border-left: 3px solid #e8a820;
+      font-family: 'Playfair Display', serif;
+      line-height: 1.65; margin-bottom: 7px;
+    }
+    .gc-hl { background: rgba(255,210,0,0.38); padding: 1px 2px; border-radius: 2px; }
+    .gc-exp { font-size: 0.81rem; color: #5a4a30; line-height: 1.68; }
 
     /* 숙어 카드 */
-    .idiom-card {
-      background: #f5eeff;
-      border: 1px solid #d4b8f0;
-      border-radius: 7px;
-      padding: 12px 14px;
-      margin-bottom: 10px;
+    .icard {
+      background: #f6eeff;
+      border: 1.5px solid #d0b0f0;
+      border-radius: 4px;
+      padding: 11px 13px;
+      margin-bottom: 9px;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.04);
     }
-    .idiom-phrase { font-size: 0.97rem; font-weight: bold; color: #3a1a5a; font-family: 'Georgia', serif; margin-bottom: 4px; }
-    .idiom-mean { font-size: 0.86rem; color: #4a3a6a; margin-bottom: 8px; }
-    .idiom-ex {
-      font-size: 0.81rem;
-      font-style: italic;
-      color: #5a4a7a;
-      border-left: 2px solid #9060d0;
-      padding-left: 9px;
-      line-height: 1.6;
-    }
-    .idiom-ex-kr { font-size: 0.79rem; color: #4a3a6a; margin-top: 3px; font-style: normal; }
+    .ic-phrase { font-family: 'Playfair Display', serif; font-size: 0.97rem; font-weight: 700; color: #3a1a5a; margin-bottom: 4px; }
+    .ic-mean   { font-size: 0.84rem; color: #4a3a6a; margin-bottom: 7px; }
+    .ic-ex     { font-size: 0.79rem; font-style: italic; color: #5a4a7a; border-left: 2px solid #9060d0; padding-left: 8px; line-height: 1.6; }
+    .ic-exkr   { font-size: 0.77rem; color: #4a3a6a; margin-top: 3px; font-style: normal; }
 
-    /* 은어/표현 카드 */
-    .slang-card {
-      background: #eef8f4;
-      border: 1px solid #a4d8c0;
-      border-radius: 7px;
-      padding: 12px 14px;
-      margin-bottom: 10px;
+    /* 은어 카드 */
+    .scard {
+      background: #eef8f2;
+      border: 1.5px solid #90c8a8;
+      border-radius: 4px;
+      padding: 11px 13px;
+      margin-bottom: 9px;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.04);
     }
-    .slang-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-    .slang-word { font-size: 0.97rem; font-weight: bold; color: #1a4a3a; font-family: 'Georgia', serif; }
-    .slang-badge {
-      font-size: 0.65rem;
-      background: #2a7a5a;
-      color: white;
-      padding: 2px 8px;
-      border-radius: 10px;
-    }
-    .slang-mean { font-size: 0.85rem; color: #2a4a3a; line-height: 1.6; }
+    .sc-row   { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; }
+    .sc-w     { font-family: 'Playfair Display', serif; font-size: 0.97rem; font-weight: 700; color: #1a4a3a; }
+    .sc-badge { font-size: 0.63rem; background: #2a7a5a; color: white; padding: 2px 7px; border-radius: 2px; font-family: 'DM Mono', monospace; }
+    .sc-mean  { font-size: 0.83rem; color: #2a4a3a; line-height: 1.65; }
 
-    /* ===== 로딩 & 에러 ===== */
-    .loading {
-      text-align: center;
-      padding: 60px 20px;
-      color: #8a7a6a;
+    /* ===== 로딩 / 에러 / 빈 ===== */
+    .center-msg {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      min-height: 300px; text-align: center;
+      color: var(--muted); padding: 40px 20px;
     }
-    .spinner { display: inline-block; font-size: 1.8rem; animation: spin 1s linear infinite; }
+    .center-msg .ico { font-size: 2.6rem; margin-bottom: 12px; }
+    .spin { animation: spin 1s linear infinite; display: inline-block; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .error-box {
-      background: #fff0f0;
-      border: 1px solid #ffb0b0;
-      border-radius: 6px;
-      padding: 22px;
-      text-align: center;
-      color: #c05050;
-      margin: 20px;
+    .err-box {
+      background: #fff2f0; border: 1.5px solid #f0b0a0;
+      border-radius: 4px; padding: 20px; text-align: center;
+      color: var(--accent); margin: 20px;
     }
 
-    .study-empty {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      min-height: 300px;
-      padding: 40px 20px;
-      text-align: center;
-      color: #8a7a6a;
+    /* ===== 저장함 탭 ===== */
+    .saves-view { padding: 20px; }
+    .saves-empty {
+      text-align: center; padding: 60px 20px; color: var(--muted);
     }
-    .study-empty .big-icon { font-size: 3rem; margin-bottom: 14px; }
+    .saves-empty .ico { font-size: 2.8rem; margin-bottom: 12px; }
+
+    .save-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .save-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      padding: 14px 18px;
+      cursor: pointer;
+      transition: all 0.18s;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.04);
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .save-card:hover {
+      border-color: var(--accent2);
+      box-shadow: 3px 3px 0 rgba(58,106,138,0.15);
+      transform: translateX(2px);
+    }
+    .save-card-left { flex: 1; min-width: 0; }
+    .save-card-right { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+
+    .sc-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem; color: var(--muted);
+      background: rgba(180,160,120,0.13);
+      padding: 2px 8px; border-radius: 2px;
+    }
+    .sc-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.97rem; font-weight: 700;
+      color: var(--ink); margin: 5px 0 6px;
+      line-height: 1.35;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .sc-sum {
+      font-size: 0.8rem; color: var(--muted);
+      line-height: 1.6;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .sc-del {
+      background: transparent;
+      border: 1px solid #e0c0c0;
+      color: #c08080;
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 2px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .sc-del:hover { background: #c05050; color: white; border-color: #c05050; }
+    .sc-open {
+      font-size: 0.72rem; color: var(--accent2);
+      border: 1px solid var(--accent2);
+      background: transparent;
+      padding: 3px 8px; border-radius: 2px;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.15s;
+    }
+    .sc-open:hover { background: var(--accent2); color: white; }
+
+    .saves-count {
+      font-size: 0.78rem; color: var(--muted);
+      margin-bottom: 14px;
+      font-family: 'DM Mono', monospace;
+    }
 
     /* ===== 반응형 ===== */
     @media (max-width: 860px) {
       .content-area { grid-template-columns: 1fr; }
-      .article-panel { border-right: none; border-bottom: 2px solid #b0945a; }
-      .panel-body, .study-body { max-height: none; }
-      body::before { left: 30px; }
-      .ring-holes { left: 5px; }
-      .page-wrapper { padding-left: 48px; padding-right: 14px; }
+      .art-panel { border-right: none; border-bottom: 1.5px solid var(--border); }
+      .p-body, .study-body { max-height: none; }
+      body { background-image: linear-gradient(var(--line) 1px, transparent 1px); background-size: 100% 36px; }
+      .rings { left: 5px; }
+      .wrapper { padding-left: 50px; padding-right: 14px; }
     }
 
     .hidden { display: none !important; }
@@ -475,85 +538,105 @@
 </head>
 <body>
 
-<div class="ring-holes">
+<div class="rings">
   <span></span><span></span><span></span>
   <span></span><span></span><span></span>
   <span></span><span></span><span></span>
   <span></span><span></span>
 </div>
 
-<div class="page-wrapper">
+<div class="wrapper">
 
   <!-- 헤더 -->
   <header>
-    <div class="header-left">
-      <h1>📰 English News <span>Study</span></h1>
-      <p>The Korea Times · 매일 아침 8시 최신 기사로 배우는 영어</p>
+    <div class="h-left">
+      <h1>English News <em>Study</em></h1>
+      <p>The Korea Times · 영어 신문으로 배우는 영어 · 매일 오전 8시 자동 갱신</p>
     </div>
-    <div class="header-right">
+    <div class="h-right">
       <span class="date-badge" id="today-date"></span>
-      <button class="btn btn-ghost" onclick="showApiSetup()">⚙️ API 설정</button>
-      <button class="btn btn-primary" onclick="loadArticles()">🔄 기사 불러오기</button>
+      <button class="btn btn-ghost" onclick="showApiSetup()">⚙ API</button>
+      <button class="btn btn-red"   onclick="loadArticles()">↻ 기사 불러오기</button>
     </div>
   </header>
 
-  <!-- API 설정 박스 -->
-  <div class="api-setup hidden" id="api-setup-box">
-    <h3>⚙️ Google Gemini API 키 설정</h3>
-    <p>번역·단어·문법 분석에 Google Gemini API(gemini-2.0-flash)를 사용합니다.<br>
-       키는 브라우저 로컬에만 저장되며 외부로 전송되지 않습니다.<br>
-       🔑 API 키 발급: <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="color:#4a7a4a">Google AI Studio</a> (무료 티어 하루 1,500회)</p>
-    <div class="api-setup-row">
-      <input type="password" id="api-key-input" placeholder="AIza..." />
-      <button class="btn btn-secondary" onclick="saveApiKey()">✅ 저장</button>
-      <button class="btn btn-ghost" onclick="clearApiKey()">🗑 삭제</button>
+  <!-- API 설정 -->
+  <div class="api-box hidden" id="api-box">
+    <h3>⚙ Google Gemini API 키 설정</h3>
+    <p>
+      번역·단어·문법 분석에 <strong>Gemini 2.0 Flash</strong>를 사용합니다. 키는 브라우저에만 저장됩니다.<br>
+      🔑 무료 발급: <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Google AI Studio</a> (무료 1,500회/일)
+    </p>
+    <div class="api-row">
+      <input type="password" id="api-inp" placeholder="AIza..." />
+      <button class="btn btn-green" onclick="saveKey()">✓ 저장</button>
+      <button class="btn btn-ghost" onclick="clearKey()">✕ 삭제</button>
     </div>
-    <p class="api-notice">※ API 키 없이도 영문 기사 원문은 표시되나 번역·분석은 제공되지 않습니다.</p>
+    <p class="api-note">※ API 키 없이도 원문은 표시되나 번역·분석은 비활성화됩니다.</p>
   </div>
 
-  <!-- 기사 탭 -->
-  <div class="article-tabs" id="article-tabs"></div>
+  <!-- 상단 탭: 오늘의 기사 / 저장된 기사 -->
+  <div class="top-tabs">
+    <button class="top-tab active" id="tt-news" onclick="switchTopTab('news')">
+      📰 오늘의 기사
+    </button>
+    <button class="top-tab" id="tt-saved" onclick="switchTopTab('saved')">
+      🔖 저장된 기사 <span class="badge" id="save-cnt">0</span>
+    </button>
+  </div>
 
-  <!-- 메인 2단 레이아웃 -->
-  <div class="content-area">
-
-    <!-- 왼쪽: 기사 -->
-    <div class="article-panel">
-      <div class="panel-header">
-        <span>📰 ARTICLE · 원문 &amp; 해석</span>
-        <span>✏️</span>
+  <!-- ▼ 오늘의 기사 뷰 -->
+  <div id="view-news">
+    <div class="art-tabs" id="art-tabs"></div>
+    <div class="content-area">
+      <div class="art-panel">
+        <div class="p-header">
+          <span>ARTICLE · 원문 &amp; 해석</span>
+          <span>✎</span>
+        </div>
+        <div class="p-body" id="art-panel">
+          <div class="center-msg">
+            <div class="ico">📰</div>
+            <p><strong>↻ 기사 불러오기</strong>를 눌러주세요</p>
+          </div>
+        </div>
       </div>
-      <div class="panel-body" id="article-panel">
-        <div class="loading">
-          <div class="spinner">⌛</div>
-          <p style="margin-top:12px">오른쪽 상단 <strong>'기사 불러오기'</strong>를 누르세요</p>
+      <div class="study-panel">
+        <div class="p-header" style="background:var(--panel-r);color:#a8c8a8">
+          <span>STUDY · 단어 · 문법 · 숙어</span>
+          <span>✎</span>
+        </div>
+        <div class="study-body" id="study-panel">
+          <div class="center-msg">
+            <div class="ico">📖</div>
+            <p>기사를 불러오면<br>학습 내용이 표시됩니다</p>
+            <p style="font-size:0.78rem;margin-top:6px;color:#b0a888">Gemini API 키 설정 시 분석 제공</p>
+          </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- 오른쪽: 학습 -->
-    <div class="study-panel">
-      <div class="panel-header" style="background:#1a4a2e">
-        <span>📚 STUDY · 단어 · 문법 · 숙어 · 표현</span>
-        <span>🖊️</span>
-      </div>
-      <div class="study-body" id="study-panel">
-        <div class="study-empty">
-          <div class="big-icon">📖</div>
-          <p>기사를 불러오면<br>학습 내용이 여기 표시됩니다</p>
-          <p style="font-size:0.8rem;margin-top:8px;color:#b0a090">
-            단어 · 문법 · 숙어 분석은<br>Gemini API 키 설정 시 제공됩니다
-          </p>
+  <!-- ▼ 저장된 기사 뷰 -->
+  <div id="view-saved" class="hidden">
+    <div style="border:1.5px solid var(--border);border-top:none;border-radius:0 4px 4px 4px;min-height:60vh;background:rgba(245,240,232,0.98);">
+      <div class="saves-view" id="saves-view">
+        <div class="saves-empty">
+          <div class="ico">🔖</div>
+          <p>저장된 기사가 없습니다<br>
+          <span style="font-size:0.8rem;margin-top:6px;display:block;color:#b0a080">
+            기사를 읽다가 <strong>💾 저장</strong> 버튼을 누르면 여기에 쌓입니다
+          </span></p>
         </div>
       </div>
     </div>
-
   </div>
-</div>
+
+</div><!-- /wrapper -->
 
 <script>
 // ================================================================
-// 전역 변수
+// 상수 & 전역
 // ================================================================
 const PROXY   = 'https://api.allorigins.win/get?url=';
 const KT_URL  = 'https://www.koreatimes.co.kr/?edition=south-korea';
@@ -561,7 +644,8 @@ const KT_HOST = 'https://www.koreatimes.co.kr';
 
 let articles       = [];
 let currentIdx     = 0;
-let cachedAnalysis = {};
+let sessionCache   = {};   // href → payload (메모리)
+let currentTopTab  = 'news';
 
 // ================================================================
 // 초기화
@@ -569,144 +653,149 @@ let cachedAnalysis = {};
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('today-date').textContent =
     new Date().toLocaleDateString('ko-KR', {
-      year: 'numeric', month: 'long', day: 'numeric', weekday: 'short'
+      year:'numeric', month:'long', day:'numeric', weekday:'short'
     });
 
-  // 저장된 API 키 없으면 설정창 열기
-  if (!localStorage.getItem('gemini_api_key')) showApiSetup();
+  if (!localStorage.getItem('gemini_key')) showApiSetup();
 
-  // 오늘 캐시 확인
-  const cached = localStorage.getItem('articles_' + getTodayKey());
+  updateSaveBadge();
+
+  const cached = localStorage.getItem('articles_' + todayKey());
   if (cached) {
     try {
       articles = JSON.parse(cached);
-      renderTabs();
+      renderArtTabs();
       restoreOrLoad(0);
       return;
-    } catch (e) {}
+    } catch(e) {}
   }
-
-  // 오전 8시 이후면 자동 로드
   if (new Date().getHours() >= 8) loadArticles();
 });
 
-function getTodayKey() {
+function todayKey() {
   const d = new Date();
   return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
 }
 
 // ================================================================
-// API 키 관리
+// 상단 탭 전환 (오늘의 기사 ↔ 저장된 기사)
+// ================================================================
+function switchTopTab(tab) {
+  currentTopTab = tab;
+  document.getElementById('tt-news').classList.toggle('active', tab === 'news');
+  document.getElementById('tt-saved').classList.toggle('active', tab === 'saved');
+  document.getElementById('view-news').classList.toggle('hidden', tab !== 'news');
+  document.getElementById('view-saved').classList.toggle('hidden', tab !== 'saved');
+  if (tab === 'saved') renderSavesList();
+}
+
+// ================================================================
+// API 키
 // ================================================================
 function showApiSetup() {
-  const box = document.getElementById('api-setup-box');
+  const box = document.getElementById('api-box');
   box.classList.toggle('hidden');
-  const saved = localStorage.getItem('gemini_api_key');
-  if (saved) document.getElementById('api-key-input').value = saved;
+  const k = localStorage.getItem('gemini_key');
+  if (k) document.getElementById('api-inp').value = k;
 }
-
-function saveApiKey() {
-  const val = document.getElementById('api-key-input').value.trim();
-  if (val && !val.startsWith('AIza')) {
-    alert('올바른 Gemini API 키를 입력하세요. (AIza로 시작)');
-    return;
-  }
-  if (val) {
-    localStorage.setItem('gemini_api_key', val);
-    alert('✅ Gemini API 키가 저장되었습니다.');
-  }
-  document.getElementById('api-setup-box').classList.add('hidden');
+function saveKey() {
+  const v = document.getElementById('api-inp').value.trim();
+  if (v && !v.startsWith('AIza')) { alert('올바른 Gemini API 키를 입력하세요 (AIza로 시작)'); return; }
+  if (v) { localStorage.setItem('gemini_key', v); alert('✓ 저장되었습니다'); }
+  document.getElementById('api-box').classList.add('hidden');
 }
-
-function clearApiKey() {
-  localStorage.removeItem('gemini_api_key');
-  document.getElementById('api-key-input').value = '';
-  alert('🗑 API 키가 삭제되었습니다.');
+function clearKey() {
+  localStorage.removeItem('gemini_key');
+  document.getElementById('api-inp').value = '';
+  alert('삭제되었습니다');
 }
-
-function getApiKey() {
-  return localStorage.getItem('gemini_api_key') || '';
-}
+function getKey() { return localStorage.getItem('gemini_key') || ''; }
 
 // ================================================================
 // 기사 목록 불러오기
 // ================================================================
 async function loadArticles() {
-  setArticlePanel(`<div class="loading"><div class="spinner">⌛</div><p style="margin-top:12px">최신 기사 가져오는 중...</p></div>`);
-  setStudyPanel(`<div class="study-empty"><div class="big-icon">⌛</div><p>잠시만 기다려주세요</p></div>`);
+  setArt(`<div class="center-msg"><div class="ico spin">⌛</div><p>최신 기사 가져오는 중…</p></div>`);
+  setStudy(`<div class="center-msg"><div class="ico">⌛</div><p>잠시만 기다려주세요</p></div>`);
 
   try {
-    const html = await fetchViaProxy(KT_URL);
+    const html = await proxyFetch(KT_URL);
     const doc  = new DOMParser().parseFromString(html, 'text/html');
+    const seen = new Set(), found = [];
 
-    const seen  = new Set();
-    const found = [];
     for (const a of doc.querySelectorAll('a[href]')) {
-      const rawHref = a.getAttribute('href') || '';
-      const href    = rawHref.startsWith('http') ? rawHref : KT_HOST + rawHref;
-      const text    = a.textContent.trim().replace(/\s+/g, ' ');
+      const raw  = a.getAttribute('href') || '';
+      const href = raw.startsWith('http') ? raw : KT_HOST + raw;
+      const text = a.textContent.trim().replace(/\s+/g,' ');
       if (
         href.includes('koreatimes.co.kr') &&
         /\/\d{8}\//.test(href) &&
         !href.includes('edition=') &&
-        text.length > 15 &&
-        !seen.has(href)
-      ) {
-        seen.add(href);
-        found.push({ href, title: text });
+        text.length > 15 && !seen.has(href)
+      ) { seen.add(href); found.push({ href, title: text });
       }
     }
 
     if (found.length === 0) throw new Error('기사 링크를 찾을 수 없습니다.');
 
     articles = found.slice(0, 3);
-    localStorage.setItem('articles_' + getTodayKey(), JSON.stringify(articles));
-
-    renderTabs();
+    localStorage.setItem('articles_' + todayKey(), JSON.stringify(articles));
+    renderArtTabs();
     await loadArticle(0);
 
   } catch (err) {
-    setArticlePanel(`
-      <div class="error-box">
-        <p>⚠️ 기사를 불러오지 못했습니다</p>
-        <p style="font-size:0.8rem;margin-top:6px;opacity:0.8">${err.message}</p>
-        <button class="btn btn-primary" style="margin-top:14px" onclick="loadArticles()">다시 시도</button>
+    setArt(`
+      <div class="err-box">
+        <p>⚠ 기사를 불러오지 못했습니다</p>
+        <p style="font-size:0.78rem;margin-top:5px;opacity:0.75">${escH(err.message)}</p>
+        <button class="btn btn-red" style="margin-top:12px" onclick="loadArticles()">↻ 다시 시도</button>
       </div>`);
   }
 }
 
 // ================================================================
-// 탭 렌더링
+// 기사 서브탭 렌더링
 // ================================================================
-function renderTabs() {
-  document.getElementById('article-tabs').innerHTML =
+function renderArtTabs() {
+  document.getElementById('art-tabs').innerHTML =
     articles.map((a, i) =>
-      `<button class="tab-btn${i===0?' active':''}" onclick="switchTab(${i})" title="${escHtml(a.title)}">
+      `<button class="art-tab${i===0?' active':''}" onclick="switchArt(${i})" title="${escH(a.title)}">
          📄 기사 ${i+1}
        </button>`
     ).join('');
 }
 
-function switchTab(idx) {
+function switchArt(idx) {
   currentIdx = idx;
-  document.querySelectorAll('.tab-btn').forEach((b, i) =>
+  document.querySelectorAll('.art-tab').forEach((b,i) =>
     b.classList.toggle('active', i === idx)
   );
   restoreOrLoad(idx);
 }
 
 async function restoreOrLoad(idx) {
-  const art      = articles[idx];
-  const cacheKey = 'cache_' + btoa(encodeURIComponent(art.href)).substring(0, 24);
-  const cached   = cachedAnalysis[art.href] ||
-    (() => { try { return JSON.parse(localStorage.getItem(cacheKey) || 'null'); } catch { return null; } })();
+  const art = articles[idx];
+  if (!art) return;
 
-  if (cached?.paragraphs?.length) {
-    renderArticlePanel(cached);
-    renderStudyPanel(cached.analysis);
-  } else {
-    await loadArticle(idx);
+  // 세션 메모리 캐시 확인
+  if (sessionCache[art.href]?.paragraphs?.length) {
+    renderArtPanel(sessionCache[art.href]);
+    renderStudyPanel(sessionCache[art.href].analysis);
+    return;
   }
+  // localStorage 캐시 확인
+  const ck = cacheKey(art.href);
+  try {
+    const stored = JSON.parse(localStorage.getItem(ck) || 'null');
+    if (stored?.paragraphs?.length) {
+      sessionCache[art.href] = stored;
+      renderArtPanel(stored);
+      renderStudyPanel(stored.analysis);
+      return;
+    }
+  } catch(e) {}
+
+  await loadArticle(idx);
 }
 
 // ================================================================
@@ -714,17 +803,17 @@ async function restoreOrLoad(idx) {
 // ================================================================
 async function loadArticle(idx) {
   const art = articles[idx];
-  setArticlePanel(`<div class="loading"><div class="spinner">⌛</div><p style="margin-top:12px">기사 로딩 중…</p></div>`);
-  setStudyPanel(`<div class="study-empty"><div class="big-icon">🔍</div><p>기사 분석 준비 중…</p></div>`);
+  setArt(`<div class="center-msg"><div class="ico spin">⌛</div><p>기사 로딩 중…</p></div>`);
+  setStudy(`<div class="center-msg"><div class="ico">🔍</div><p>잠시만 기다려주세요</p></div>`);
 
   try {
-    const html = await fetchViaProxy(art.href);
+    const html = await proxyFetch(art.href);
     const doc  = new DOMParser().parseFromString(html, 'text/html');
 
     const title = doc.querySelector('h1')?.textContent?.trim() || art.title;
 
     const author = (() => {
-      for (const sel of ['[class*="author"]', '.byline a', '[rel="author"]']) {
+      for (const sel of ['[class*="author"]','.byline a','[rel="author"]']) {
         const el = doc.querySelector(sel);
         if (el?.textContent?.trim()) return el.textContent.trim();
       }
@@ -732,59 +821,55 @@ async function loadArticle(idx) {
     })();
 
     const date = (() => {
-      for (const sel of ['time', '[class*="date"]', '[class*="published"]']) {
+      for (const sel of ['time','[class*="date"]','[class*="published"]']) {
         const el = doc.querySelector(sel);
         if (el?.textContent?.trim()) return el.textContent.trim().replace(/\s+/g,' ');
       }
-      return '';
+      return new Date().toLocaleDateString('ko-KR');
     })();
 
     // 본문 단락 추출
     let paragraphs = [];
     const bodyEl = doc.querySelector(
-      '[class*="EditorContents"], [class*="article-body"], [class*="article-content"], [class*="story-body"]'
+      '[class*="EditorContents"],[class*="article-body"],[class*="article-content"],[class*="story-body"]'
     );
     if (bodyEl) {
       paragraphs = [...bodyEl.querySelectorAll('p')]
-        .map(p => p.textContent.trim())
-        .filter(t => t.length > 40);
+        .map(p => p.textContent.trim()).filter(t => t.length > 40);
     }
-    if (paragraphs.length === 0) {
+    if (!paragraphs.length) {
       paragraphs = [...doc.querySelectorAll('p')]
         .map(p => p.textContent.trim())
         .filter(t => t.length > 80 && !t.startsWith('©') && !t.includes('Korea Times photo'))
         .slice(0, 12);
     }
-    if (paragraphs.length === 0) throw new Error('본문을 추출할 수 없습니다.');
+    if (!paragraphs.length) throw new Error('본문을 추출할 수 없습니다.');
 
-    const articleData = { href: art.href, title, author, date, paragraphs };
+    const payload = { href: art.href, title, author, date, paragraphs, analysis: null };
 
     // Gemini 분석
-    let analysis = null;
-    const apiKey = getApiKey();
+    const apiKey = getKey();
     if (apiKey) {
-      setStudyPanel(`<div class="study-empty"><div class="big-icon">🤖</div><p>Gemini AI 분석 중…<br><small>잠시만 기다려주세요</small></p></div>`);
+      setStudy(`<div class="center-msg"><div class="ico">🤖</div><p>Gemini AI 분석 중…<br><small style="color:#b0a080">잠시만 기다려주세요</small></p></div>`);
       try {
-        analysis = await analyzeWithGemini(title, paragraphs.join('\n\n'), apiKey);
-      } catch (e) {
+        payload.analysis = await geminiAnalyze(title, paragraphs.join('\n\n'), apiKey);
+      } catch(e) {
         console.warn('Gemini 분석 실패:', e.message);
       }
     }
 
     // 캐시 저장
-    const payload  = { ...articleData, analysis };
-    cachedAnalysis[art.href] = payload;
-    const cacheKey = 'cache_' + btoa(encodeURIComponent(art.href)).substring(0, 24);
-    try { localStorage.setItem(cacheKey, JSON.stringify(payload)); } catch (e) {}
+    sessionCache[art.href] = payload;
+    try { localStorage.setItem(cacheKey(art.href), JSON.stringify(payload)); } catch(e) {}
 
-    renderArticlePanel(payload);
-    renderStudyPanel(analysis);
+    renderArtPanel(payload);
+    renderStudyPanel(payload.analysis);
 
-  } catch (err) {
-    setArticlePanel(`
-      <div class="error-box">
-        <p>⚠️ ${escHtml(err.message)}</p>
-        <button class="btn btn-primary" style="margin-top:12px" onclick="loadArticle(${idx})">다시 시도</button>
+  } catch(err) {
+    setArt(`
+      <div class="err-box">
+        <p>⚠ ${escH(err.message)}</p>
+        <button class="btn btn-red" style="margin-top:10px" onclick="loadArticle(${idx})">↻ 다시 시도</button>
       </div>`);
   }
 }
@@ -792,18 +877,22 @@ async function loadArticle(idx) {
 // ================================================================
 // CORS 프록시 fetch
 // ================================================================
-async function fetchViaProxy(url) {
+async function proxyFetch(url) {
   const res = await fetch(PROXY + encodeURIComponent(url));
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const data = await res.json();
-  if (!data.contents) throw new Error('프록시 응답이 비어있습니다');
+  if (!data.contents) throw new Error('프록시 응답 없음');
   return data.contents;
 }
 
+function cacheKey(href) {
+  return 'art_' + btoa(encodeURIComponent(href)).substring(0, 28);
+}
+
 // ================================================================
-// Gemini API 분석 (gemini-2.0-flash)
+// Gemini API 분석
 // ================================================================
-async function analyzeWithGemini(title, text, apiKey) {
+async function geminiAnalyze(title, text, apiKey) {
   const prompt = `You are an expert English teacher for Korean learners.
 Analyze this English news article and return ONLY valid JSON (no markdown, no code block).
 
@@ -815,12 +904,13 @@ ${text.substring(0, 3500)}
 Return exactly this JSON structure:
 {
   "title_kr": "기사 제목의 자연스러운 한국어 번역",
+  "summary_kr": "기사 전체 내용을 2~3문장으로 요약 (한국어)",
   "paragraphs_kr": ["각 문단의 자연스러운 한국어 번역 (순서 동일, 문단 수 맞출 것)"],
   "vocabulary": [
     {
       "word": "단어 또는 구",
-      "phonetic": "/발음기호/ 선택사항",
-      "pos": "품사 (n./v./adj./adv./phr. 등)",
+      "phonetic": "/발음기호/ (선택)",
+      "pos": "품사 (n./v./adj./adv./phr.)",
       "def_kr": "한국어 뜻",
       "example": "기사에서 가져온 예문",
       "example_kr": "예문 한국어 번역"
@@ -845,18 +935,19 @@ Return exactly this JSON structure:
   "slang": [
     {
       "word": "은어·구어·뉴스 전문용어",
-      "badge": "분류 태그 (뉴스 용어 / 구어 / 비즈니스 중 하나)",
-      "meaning_kr": "뜻과 사용 맥락 설명 (한국어)"
+      "badge": "뉴스 용어 또는 구어 또는 비즈니스",
+      "meaning_kr": "뜻과 사용 맥락 (한국어)"
     }
   ]
 }
 
 Rules:
-- vocabulary: 5~8개, 난이도 있는 단어 위주
-- grammar: 2~3개, 한국인이 틀리기 쉬운 문법 포인트
-- idioms: 2~4개, 실용적인 숙어·관용표현
-- slang: 0~3개, 없으면 빈 배열 []
-- paragraphs_kr 배열 길이는 실제 문단 수와 동일하게`;
+- summary_kr: 반드시 포함 (저장 목록 미리보기에 사용됨)
+- vocabulary: 5~8개
+- grammar: 2~3개
+- idioms: 2~4개
+- slang: 0~3개, 없으면 []
+- paragraphs_kr 길이 = 실제 문단 수와 동일`;
 
   const endpoint =
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
@@ -866,7 +957,7 @@ Rules:
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
-generationConfig: {
+      generationConfig: {
         temperature: 0.3,
         responseMimeType: 'application/json'
       }
@@ -875,33 +966,43 @@ generationConfig: {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.error?.message || `Gemini API 오류 ${res.status}`);
+    throw new Error(err.error?.message || `Gemini 오류 ${res.status}`);
   }
 
   const result = await res.json();
   const raw    = result.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!raw) throw new Error('Gemini 응답이 비어있습니다.');
 
-  // 혹시 마크다운 코드블록이 붙어 있으면 제거
-  const cleaned = raw.replace(/^```json\s*/i, '').replace(/\s*```$/,'').trim();
+  const cleaned = raw.replace(/^```json\s*/i,'').replace(/\s*```$/,'').trim();
   return JSON.parse(cleaned);
 }
 
 // ================================================================
 // 기사 패널 렌더링 (왼쪽)
 // ================================================================
-function renderArticlePanel(data) {
+function renderArtPanel(data) {
   const { href, title, author, date, paragraphs, analysis } = data;
   const titleKr = analysis?.title_kr || '';
   const parasKr = analysis?.paragraphs_kr || [];
 
+  // 이미 저장되어 있는지 확인
+  const isSaved = getSavedList().some(s => s.href === href);
+
   let html = `
-    <div class="article-title-en">${escHtml(title)}</div>
-    ${titleKr ? `<div class="article-title-kr">🇰🇷 ${escHtml(titleKr)}</div>` : ''}
-    <div class="article-meta">
-      <span>✍️ ${escHtml(author)}</span>
-      ${date ? `<span>📅 ${escHtml(date.substring(0, 40))}</span>` : ''}
-      <span>📰 The Korea Times</span>
+    <div class="art-title-en">${escH(title)}</div>
+    ${titleKr ? `<div class="art-title-kr">🇰🇷 ${escH(titleKr)}</div>` : ''}
+    <div class="art-meta">
+      <span>✍ ${escH(author)}</span>
+      ${date ? `<span>${escH(date.substring(0,40))}</span>` : ''}
+      <span>The Korea Times</span>
+    </div>
+    <div class="art-toolbar">
+      <a href="${escH(href)}" target="_blank" rel="noopener" class="src-link">↗ 원문 보기</a>
+      <button
+        class="btn-save${isSaved?' saved':''}"
+        id="save-btn"
+        onclick="toggleSave('${escH(href)}')"
+      >${isSaved ? '🔖 저장됨' : '💾 저장'}</button>
     </div>
   `;
 
@@ -909,23 +1010,16 @@ function renderArticlePanel(data) {
     const kr = parasKr[i] || '';
     html += `
       <div class="para-block">
-        <div class="para-en">${escHtml(para)}</div>
+        <div class="para-en">${escH(para)}</div>
         ${kr ? `
           <div class="para-kr">
-            <div class="para-kr-label">한국어 해석</div>
-            ${escHtml(kr)}
+            <div class="kr-label">KR</div>
+            ${escH(kr)}
           </div>` : ''}
       </div>`;
   });
 
-  html += `
-    <div style="margin-top:10px">
-      <a href="${escHtml(href)}" target="_blank" rel="noopener" class="source-link">
-        🔗 원문 기사 보기 (Korea Times)
-      </a>
-    </div>`;
-
-  setArticlePanel(html);
+  setArt(html);
 }
 
 // ================================================================
@@ -933,147 +1027,280 @@ function renderArticlePanel(data) {
 // ================================================================
 function renderStudyPanel(analysis) {
   if (!analysis) {
-    const hasKey = !!getApiKey();
-    setStudyPanel(`
-      <div class="study-empty">
-        <div class="big-icon">📖</div>
+    const hasKey = !!getKey();
+    setStudy(`
+      <div class="center-msg">
+        <div class="ico">📖</div>
         <p>${hasKey
-          ? 'AI 분석에 실패했습니다.<br>기사를 다시 불러오세요.'
+          ? 'AI 분석 실패.<br>기사를 다시 불러오세요.'
           : 'Gemini API 키를 설정하면<br>단어·문법·숙어 분석이 제공됩니다.'
         }</p>
-        ${!hasKey ? `<button class="btn btn-secondary" style="margin-top:16px" onclick="showApiSetup()">⚙️ API 키 설정하기</button>` : ''}
+        ${!hasKey ? `<button class="btn btn-green" style="margin-top:14px" onclick="showApiSetup()">⚙ API 키 설정</button>` : ''}
       </div>`);
     return;
   }
 
   let html = '';
 
-  // ── 📝 핵심 단어 ──
   if (analysis.vocabulary?.length) {
-    html += buildSection('📝 핵심 단어 &amp; 표현', analysis.vocabulary.map(v => `
-      <div class="word-card">
-        <div class="wc-head">
-          <span class="wc-word">${escHtml(v.word)}</span>
-          ${v.phonetic ? `<span class="wc-ph">${escHtml(v.phonetic)}</span>` : ''}
-          ${v.pos      ? `<span class="wc-pos">${escHtml(v.pos)}</span>`      : ''}
-        </div>
-        <div class="wc-def">▸ ${escHtml(v.def_kr)}</div>
-        ${v.example ? `
-          <div class="wc-ex">${escHtml(v.example)}</div>
-          ${v.example_kr ? `<div class="wc-ex-kr">→ ${escHtml(v.example_kr)}</div>` : ''}
-        ` : ''}
-      </div>`).join(''));
+    html += mkSection('📝 핵심 단어 &amp; 표현',
+      analysis.vocabulary.map(v => `
+        <div class="wcard">
+          <div class="wc-row">
+            <span class="wc-w">${escH(v.word)}</span>
+            ${v.phonetic ? `<span class="wc-ph">${escH(v.phonetic)}</span>` : ''}
+            ${v.pos      ? `<span class="wc-pos">${escH(v.pos)}</span>` : ''}
+          </div>
+          <div class="wc-def">▸ ${escH(v.def_kr)}</div>
+          ${v.example ? `
+            <div class="wc-ex">${escH(v.example)}</div>
+            ${v.example_kr ? `<div class="wc-exkr">→ ${escH(v.example_kr)}</div>` : ''}
+          ` : ''}
+        </div>`).join('')
+    );
   }
 
-  // ── 📐 문법 포인트 ──
   if (analysis.grammar?.length) {
-    html += buildSection('📐 주요 문법 포인트', analysis.grammar.map(g => {
-      // 핵심 구문에 형광펜 효과
-      let exHtml = escHtml(g.example);
-      if (g.highlight) {
-        exHtml = exHtml.replace(escHtml(g.highlight),
-          `<span class="gram-hl">${escHtml(g.highlight)}</span>`);
-      }
-      return `
-        <div class="gram-card">
-          <div class="gram-title">📌 ${escHtml(g.title)}</div>
-          <div class="gram-ex">${exHtml}</div>
-          <div class="gram-exp">${escHtml(g.explain_kr)}</div>
-        </div>`;
-    }).join(''));
+    html += mkSection('📐 주요 문법 포인트',
+      analysis.grammar.map(g => {
+        let exHtml = escH(g.example);
+        if (g.highlight) {
+          exHtml = exHtml.replace(
+            escH(g.highlight),
+            `<span class="gc-hl">${escH(g.highlight)}</span>`
+          );
+        }
+        return `
+          <div class="gcard">
+            <div class="gc-title">📌 ${escH(g.title)}</div>
+            <div class="gc-ex">${exHtml}</div>
+            <div class="gc-exp">${escH(g.explain_kr)}</div>
+          </div>`;
+      }).join('')
+    );
   }
 
-  // ── 💬 숙어 & 관용표현 ──
   if (analysis.idioms?.length) {
-    html += buildSection('💬 숙어 &amp; 관용표현', analysis.idioms.map(id => `
-      <div class="idiom-card">
-        <div class="idiom-phrase">"${escHtml(id.phrase)}"</div>
-        <div class="idiom-mean">▸ ${escHtml(id.meaning_kr)}</div>
-        ${id.example ? `
-          <div class="idiom-ex">${escHtml(id.example)}</div>
-          ${id.example_kr ? `<div class="idiom-ex-kr">→ ${escHtml(id.example_kr)}</div>` : ''}
-        ` : ''}
-      </div>`).join(''));
+    html += mkSection('💬 숙어 &amp; 관용표현',
+      analysis.idioms.map(id => `
+        <div class="icard">
+          <div class="ic-phrase">"${escH(id.phrase)}"</div>
+          <div class="ic-mean">▸ ${escH(id.meaning_kr)}</div>
+          ${id.example ? `
+            <div class="ic-ex">${escH(id.example)}</div>
+            ${id.example_kr ? `<div class="ic-exkr">→ ${escH(id.example_kr)}</div>` : ''}
+          ` : ''}
+        </div>`).join('')
+    );
   }
 
-  // ── 🗣 은어 & 뉴스 전문용어 ──
   if (analysis.slang?.length) {
-    html += buildSection('🗣 은어 &amp; 뉴스 전문용어', analysis.slang.map(s => `
-      <div class="slang-card">
-        <div class="slang-head">
-          <span class="slang-word">${escHtml(s.word)}</span>
-          ${s.badge ? `<span class="slang-badge">${escHtml(s.badge)}</span>` : ''}
-        </div>
-        <div class="slang-mean">${escHtml(s.meaning_kr)}</div>
-      </div>`).join(''));
+    html += mkSection('🗣 은어 &amp; 뉴스 전문용어',
+      analysis.slang.map(s => `
+        <div class="scard">
+          <div class="sc-row">
+            <span class="sc-w">${escH(s.word)}</span>
+            ${s.badge ? `<span class="sc-badge">${escH(s.badge)}</span>` : ''}
+          </div>
+          <div class="sc-mean">${escH(s.meaning_kr)}</div>
+        </div>`).join('')
+    );
   }
 
-  if (!html) {
-    html = `<div class="study-empty"><p>분석 결과가 없습니다.</p></div>`;
-  }
-
-  setStudyPanel(html);
+  if (!html) html = `<div class="center-msg"><p>분석 결과가 없습니다.</p></div>`;
+  setStudy(html);
 }
 
 // ================================================================
-// 유틸 함수
+// 저장 기능
 // ================================================================
-function buildSection(title, innerHtml) {
-  return `
-    <div class="s-section">
-      <div class="s-title" onclick="toggleSection(this)">
-        <span>${title}</span>
-        <span class="arr">▾</span>
-      </div>
-      <div class="s-body">${innerHtml}</div>
+function getSavedList() {
+  try { return JSON.parse(localStorage.getItem('saved_articles') || '[]'); } catch { return []; }
+}
+
+function setSavedList(list) {
+  localStorage.setItem('saved_articles', JSON.stringify(list));
+  updateSaveBadge();
+}
+
+function updateSaveBadge() {
+  const cnt = getSavedList().length;
+  const el  = document.getElementById('save-cnt');
+  if (el) el.textContent = cnt;
+}
+
+function toggleSave(href) {
+  const list    = getSavedList();
+  const idx     = list.findIndex(s => s.href === href);
+  const payload = sessionCache[href];
+
+  if (idx !== -1) {
+    // 저장 해제
+    list.splice(idx, 1);
+    setSavedList(list);
+    const btn = document.getElementById('save-btn');
+    if (btn) { btn.textContent = '💾 저장'; btn.classList.remove('saved'); }
+  } else {
+    // 저장
+    if (!payload) return;
+    const item = {
+      href:       payload.href,
+      title:      payload.title,
+      date:       payload.date,
+      savedAt:    new Date().toISOString(),
+      summary_kr: payload.analysis?.summary_kr || payload.paragraphs?.[0]?.substring(0,100) || '',
+      cacheKey:   cacheKey(href)
+    };
+    list.unshift(item);  // 최신순
+    setSavedList(list);
+    const btn = document.getElementById('save-btn');
+    if (btn) { btn.textContent = '🔖 저장됨'; btn.classList.add('saved'); }
+  }
+}
+
+// ================================================================
+// 저장된 기사 목록 렌더링
+// ================================================================
+function renderSavesList() {
+  const list = getSavedList();
+  const el   = document.getElementById('saves-view');
+
+  if (!list.length) {
+    el.innerHTML = `
+      <div class="saves-empty">
+        <div class="ico">🔖</div>
+        <p>저장된 기사가 없습니다<br>
+        <span style="font-size:0.8rem;margin-top:6px;display:block;color:#b0a080">
+          기사를 읽다가 <strong>💾 저장</strong> 버튼을 누르면 여기에 쌓입니다
+        </span></p>
+      </div>`;
+    return;
+  }
+
+  const savedDate = d => {
+    try {
+      return new Date(d).toLocaleDateString('ko-KR', {
+        year:'numeric', month:'long', day:'numeric'
+      });
+    } catch { return d; }
+  };
+
+  el.innerHTML = `
+    <p class="saves-count">총 ${list.length}개의 저장된 기사</p>
+    <div class="save-list">
+      ${list.map((item, i) => `
+        <div class="save-card">
+          <div class="save-card-left">
+            <div class="sc-date">📅 ${savedDate(item.savedAt)} 저장</div>
+            <div class="sc-title">${escH(item.title)}</div>
+            ${item.summary_kr
+              ? `<div class="sc-sum">${escH(item.summary_kr)}</div>`
+              : ''}
+          </div>
+          <div class="save-card-right">
+            <button class="sc-open" onclick="openSaved(${i})">↗ 열기</button>
+            <button class="sc-del"  onclick="deleteSaved(${i}, event)">✕ 삭제</button>
+          </div>
+        </div>`).join('')}
     </div>`;
 }
 
-function toggleSection(titleEl) {
-  titleEl.classList.toggle('collapsed');
-  titleEl.nextElementSibling.classList.toggle('hidden');
+function openSaved(idx) {
+  const list = getSavedList();
+  const item = list[idx];
+  if (!item) return;
+
+  // localStorage 캐시에서 전체 데이터 복원
+  try {
+    const payload = JSON.parse(localStorage.getItem(item.cacheKey) || 'null');
+    if (payload?.paragraphs?.length) {
+      sessionCache[item.href] = payload;
+      switchTopTab('news');   // 오늘의 기사 탭으로 이동
+
+      // articles 배열에 없으면 임시 추가
+      if (!articles.some(a => a.href === item.href)) {
+        articles.unshift({ href: item.href, title: item.title });
+        renderArtTabs();
+        currentIdx = 0;
+      } else {
+        const artIdx = articles.findIndex(a => a.href === item.href);
+        currentIdx = artIdx;
+        document.querySelectorAll('.art-tab').forEach((b,i) =>
+          b.classList.toggle('active', i === artIdx)
+        );
+      }
+
+      renderArtPanel(payload);
+      renderStudyPanel(payload.analysis);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+  } catch(e) {}
+
+  // 캐시 없으면 새로 로드
+  articles.unshift({ href: item.href, title: item.title });
+  renderArtTabs();
+  switchTopTab('news');
+  loadArticle(0);
 }
 
-function setArticlePanel(html) {
-  document.getElementById('article-panel').innerHTML = html;
-}
-
-function setStudyPanel(html) {
-  document.getElementById('study-panel').innerHTML = html;
-}
-
-function escHtml(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+function deleteSaved(idx, e) {
+  e.stopPropagation();
+  const list = getSavedList();
+  if (!confirm(`"${list[idx]?.title?.substring(0,40)}" 을 삭제할까요?`)) return;
+  list.splice(idx, 1);
+  setSavedList(list);
+  renderSavesList();
 }
 
 // ================================================================
-// 매일 오전 8시 자동 새로고침 타이머
+// 유틸
+// ================================================================
+function mkSection(title, inner) {
+  return `
+    <div class="s-sec">
+      <div class="s-hd" onclick="toggleSec(this)">
+        <span>${title}</span>
+        <span class="arr">▾</span>
+      </div>
+      <div class="s-bd">${inner}</div>
+    </div>`;
+}
+
+function toggleSec(el) {
+  el.classList.toggle('collapsed');
+  el.nextElementSibling.classList.toggle('hidden');
+}
+
+function setArt(html)   { document.getElementById('art-panel').innerHTML   = html; }
+function setStudy(html) { document.getElementById('study-panel').innerHTML = html; }
+
+function escH(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ================================================================
+// 매일 오전 8시 자동 갱신
 // ================================================================
 function scheduleNext8am() {
   const now  = new Date();
   const next = new Date(now);
   next.setHours(8, 0, 5, 0);
   if (next <= now) next.setDate(next.getDate() + 1);
-  const msUntil = next - now;
-  console.log(`⏰ 다음 자동 갱신: ${next.toLocaleString('ko-KR')} (${Math.round(msUntil / 60000)}분 후)`);
+  const ms = next - now;
+  console.log(`⏰ 다음 자동 갱신: ${next.toLocaleString('ko-KR')} (${Math.round(ms/60000)}분 후)`);
 
   setTimeout(() => {
-    // 날짜 배지 갱신
     document.getElementById('today-date').textContent =
-      new Date().toLocaleDateString('ko-KR', {
-        year: 'numeric', month: 'long', day: 'numeric', weekday: 'short'
-      });
-    // 캐시 초기화 후 새 기사 로드
-    articles       = [];
-    cachedAnalysis = {};
+      new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short'});
+    articles     = [];
+    sessionCache = {};
     loadArticles();
-    scheduleNext8am(); // 다음 날 예약
-  }, msUntil);
+    scheduleNext8am();
+  }, ms);
 }
 
 scheduleNext8am();
