@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📰 영어 신문 학습</title>
+  <style>
+    /* ===== 공책 스타일 배경 ===== */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: 'Noto Sans KR', 'Georgia', serif;
+      background-color: #fdf9f0;
+      background-image: linear-gradient(#c8d8e8 1px, transparent 1px);
+      background-size: 100% 32px;
+      background-attachment: fixed;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      left: 60px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: rgba(200, 80, 80, 0.35);
+      z-index: 0;
+    }
+
+    .ring-holes {
+      position: fixed;
+      left: 18px;
+      top: 0;
+      bottom: 0;
+      width: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      padding: 60px 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .ring-holes span {
+      display: block;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #e8dcc8;
+      border: 2px solid #c4b49a;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .page-wrapper {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 24px 80px 82px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== 헤더 ===== */
+    header {
+      padding: 30px 0 18px;
+      border-bottom: 3px double #b0945a;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header-left h1 {
+      font-size: 1.9rem;
+      color: #3d2b1f;
+      font-family: 'Georgia', serif;
+    }
+    .header-left h1 span { color: #c05050; }
+    .header-left p {
+      font-size: 0.82rem;
+      color: #7a6a5a;
+      margin-top: 4px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .date-badge {
+      background: #c05050;
+      color: white;
+      padding: 4px 14px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    .btn {
+      padding: 8px 18px;
+      border-radius: 6px;
+      border: none;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: #c05050; color: white; }
+    .btn-primary:hover { background: #a03030; }
+    .btn-secondary { background: #4a7a4a; color: white; }
+    .btn-secondary:hover { background: #2a5a2a; }
+    .btn-ghost {
+      background: transparent;
+      color: #7a6a5a;
+      border: 1px solid #b0945a;
+    }
+    .btn-ghost:hover { background: #f0e8d8; }
+
+    /* ===== API 설정 박스 ===== */
+    .api-setup {
+      background: #fffbf0;
+      border: 1px solid #e8d8a0;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+    .api-setup h3 { color: #5a3a1a; margin-bottom: 6px; font-size: 1rem; }
+    .api-setup p { font-size: 0.82rem; color: #7a6a5a; line-height: 1.6; }
+    .api-setup-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .api-setup input {
+      flex: 1;
+      min-width: 200px;
+      padding: 8px 12px;
+      border: 1px solid #c4b49a;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-family: monospace;
+      background: white;
+    }
+    .api-notice {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: #9a8a7a;
+    }
+
+    /* ===== 기사 탭 ===== */
+    .article-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 0;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 8px 20px;
+      border: 2px solid #b0945a;
+      border-bottom: none;
+      background: rgba(180, 148, 90, 0.08);
+      border-radius: 6px 6px 0 0;
+      font-size: 0.84rem;
+      color: #7a6a5a;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .tab-btn:hover { background: #f0e8d8; }
+    .tab-btn.active {
+      background: #fdf9f0;
+      color: #3d2b1f;
+      font-weight: bold;
+      border-color: #b0945a;
+      position: relative;
+      bottom: -2px;
+      z-index: 2;
+    }
+
+    /* ===== 메인 2단 영역 ===== */
+    .content-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 2px solid #b0945a;
+      border-radius: 0 6px 6px 6px;
+      overflow: hidden;
+      min-height: 78vh;
+      background: rgba(253, 249, 240, 0.98);
+      box-shadow: 4px 4px 16px rgba(0,0,0,0.08);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== 왼쪽: 기사 패널 ===== */
+    .article-panel {
+      border-right: 2px solid #b0945a;
+      display: flex;
+      flex-direction: column;
+    }
+    .panel-header {
+      background: #3d2b1f;
+      color: #fdf9f0;
+      padding: 11px 20px;
+      font-size: 0.82rem;
+      font-weight: bold;
+      letter-spacing: 0.8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .panel-body {
+      padding: 24px 22px;
+      overflow-y: auto;
+      flex: 1;
+      max-height: calc(78vh - 44px);
+    }
+
+    .article-title-en {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #1a1a2e;
+      line-height: 1.4;
+      margin-bottom: 6px;
+      font-family: 'Georgia', serif;
+    }
+    .article-title-kr {
+      font-size: 0.97rem;
+      color: #4a6a4a;
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px dashed #c4b49a;
+      line-height: 1.55;
+      font-style: italic;
+    }
+    .article-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.77rem;
+      color: #9a8a7a;
+      margin-bottom: 20px;
+    }
+    .article-meta span {
+      background: rgba(180,148,90,0.12);
+      padding: 2px 9px;
+      border-radius: 10px;
+    }
+
+    .para-block {
+      margin-bottom: 22px;
+      padding: 14px 16px;
+      border-left: 3px solid #c8d8e8;
+      background: rgba(200, 216, 232, 0.07);
+      border-radius: 0 6px 6px 0;
+      transition: background 0.2s;
+    }
+    .para-block:hover { background: rgba(200, 216, 232, 0.14); }
+    .para-en {
+      font-size: 0.94rem;
+      line-height: 1.85;
+      color: #1a1a2e;
+      margin-bottom: 10px;
+    }
+    .para-kr {
+      font-size: 0.87rem;
+      line-height: 1.7;
+      color: #3a5a3a;
+      background: rgba(74, 122, 74, 0.07);
+      padding: 10px 12px;
+      border-radius: 4px;
+      border-left: 2px solid #5a9a5a;
+    }
+    .para-kr-label {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: bold;
+      background: #4a7a4a;
+      color: white;
+      padding: 1px 7px;
+      border-radius: 3px;
+      margin-bottom: 5px;
+    }
+
+    .source-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 18px;
+      color: #c05050;
+      font-size: 0.82rem;
+      text-decoration: none;
+      border: 1px solid #c05050;
+      padding: 7px 16px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .source-link:hover { background: #c05050; color: white; }
+
+    /* ===== 오른쪽: 학습 패널 ===== */
+    .study-panel {
+      display: flex;
+      flex-direction: column;
+    }
+    .study-body {
+      overflow-y: auto;
+      flex: 1;
+      max-height: calc(78vh - 44px);
+    }
+
+    .s-section { border-bottom: 1px dashed #d4c4a4; }
+    .s-section:last-child { border-bottom: none; }
+
+    .s-title {
+      padding: 14px 18px 10px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #2a2a1a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .s-title:hover { background: rgba(180, 160, 100, 0.08); }
+    .s-title .arr { margin-left: auto; color: #9a8a7a; font-size: 0.8rem; transition: transform 0.2s; }
+    .s-title.collapsed .arr { transform: rotate(-90deg); }
+
+    .s-body { padding: 2px 18px 16px; }
+    .s-body.hidden { display: none; }
+
+    /* 단어 카드 */
+    .word-card {
+      background: white;
+      border: 1px solid #ddd0b0;
+      border-radius: 7px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .word-card:hover { border-color: #b0945a; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+    .wc-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+    .wc-word { font-size: 1.05rem; font-weight: bold; color: #1a1a2e; font-family: 'Georgia', serif; }
+    .wc-ph { font-size: 0.77rem; color: #8a7a6a; }
+    .wc-pos {
+      font-size: 0.67rem;
+      background: #e8f0d8;
+      color: #3a6a2a;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+    .wc-def { font-size: 0.88rem; color: #3d2b1f; margin: 4px 0 8px; }
+    .wc-ex {
+      font-size: 0.81rem;
+      font-style: italic;
+      color: #6a5a4a;
+      border-left: 2px solid #c8d8e8;
+      padding-left: 9px;
+      line-height: 1.6;
+    }
+    .wc-ex-kr { font-size: 0.79rem; color: #4a7a4a; margin-top: 3px; font-style: normal; }
+
+    /* 문법 카드 */
+    .gram-card {
+      background: #fffbee;
+      border: 1px solid #ecd890;
+      border-radius: 7px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+    .gram-title { font-size: 0.92rem; font-weight: bold; color: #5a3a1a; margin-bottom: 8px; }
+    .gram-ex {
+      font-size: 0.88rem;
+      color: #1a1a2e;
+      background: white;
+      padding: 9px 11px;
+      border-radius: 4px;
+      border-left: 3px solid #e8a020;
+      font-family: 'Georgia', serif;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .gram-hl { background: rgba(255,210,0,0.35); padding: 1px 2px; border-radius: 2px; }
+    .gram-exp { font-size: 0.83rem; color: #5a4a3a; line-height: 1.65; }
+
+    /* 숙어 카드 */
+    .idiom-card {
+      background: #f5eeff;
+      border: 1px solid #d4b8f0;
+      border-radius: 7px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+    .idiom-phrase { font-size: 0.97rem; font-weight: bold; color: #3a1a5a; font-family: 'Georgia', serif; margin-bottom: 4px; }
+    .idiom-mean { font-size: 0.86rem; color: #4a3a6a; margin-bottom: 8px; }
+    .idiom-ex {
+      font-size: 0.81rem;
+      font-style: italic;
+      color: #5a4a7a;
+      border-left: 2px solid #9060d0;
+      padding-left: 9px;
+      line-height: 1.6;
+    }
+    .idiom-ex-kr { font-size: 0.79rem; color: #4a3a6a; margin-top: 3px; font-style: normal; }
+
+    /* 은어/표현 카드 */
+    .slang-card {
+      background: #eef8f4;
+      border: 1px solid #a4d8c0;
+      border-radius: 7px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+    }
+    .slang-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    .slang-word { font-size: 0.97rem; font-weight: bold; color: #1a4a3a; font-family: 'Georgia', serif; }
+    .slang-badge {
+      font-size: 0.65rem;
+      background: #2a7a5a;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .slang-mean { font-size: 0.85rem; color: #2a4a3a; line-height: 1.6; }
+
+    /* ===== 로딩 & 에러 ===== */
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: #8a7a6a;
+    }
+    .spinner { display: inline-block; font-size: 1.8rem; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-box {
+      background: #fff0f0;
+      border: 1px solid #ffb0b0;
+      border-radius: 6px;
+      padding: 22px;
+      text-align: center;
+      color: #c05050;
+      margin: 20px;
+    }
+
+    .study-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      min-height: 300px;
+      padding: 40px 20px;
+      text-align: center;
+      color: #8a7a6a;
+    }
+    .study-empty .big-icon { font-size: 3rem; margin-bottom: 14px; }
+
+    /* ===== 반응형 ===== */
+    @media (max-width: 860px) {
+      .content-area { grid-template-columns: 1fr; }
+      .article-panel { border-right: none; border-bottom: 2px solid #b0945a; }
+      .panel-body, .study-body { max-height: none; }
+      body::before { left: 30px; }
+      .ring-holes { left: 5px; }
+      .page-wrapper { padding-left: 48px; padding-right: 14px; }
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="ring-holes">
+  <span></span><span></span><span></span>
+  <span></span><span></span><span></span>
+  <span></span><span></span><span></span>
+  <span></span><span></span>
+</div>
+
+<div class="page-wrapper">
+
+  <!-- 헤더 -->
+  <header>
+    <div class="header-left">
+      <h1>📰 English News <span>Study</span></h1>
+      <p>The Korea Times · 매일 아침 8시 최신 기사로 배우는 영어</p>
+    </div>
+    <div class="header-right">
+      <span class="date-badge" id="today-date"></span>
+      <button class="btn btn-ghost" onclick="showApiSetup()">⚙️ API 설정</button>
+      <button class="btn btn-primary" onclick="loadArticles()">🔄 기사 불러오기</button>
+    </div>
+  </header>
+
+  <!-- API 설정 박스 -->
+  <div class="api-setup hidden" id="api-setup-box">
+    <h3>⚙️ Google Gemini API 키 설정</h3>
+    <p>번역·단어·문법 분석에 Google Gemini API(gemini-2.0-flash)를 사용합니다.<br>
+       키는 브라우저 로컬에만 저장되며 외부로 전송되지 않습니다.<br>
+       🔑 API 키 발급: <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="color:#4a7a4a">Google AI Studio</a> (무료 티어 하루 1,500회)</p>
+    <div class="api-setup-row">
+      <input type="password" id="api-key-input" placeholder="AIza..." />
+      <button class="btn btn-secondary" onclick="saveApiKey()">✅ 저장</button>
+      <button class="btn btn-ghost" onclick="clearApiKey()">🗑 삭제</button>
+    </div>
+    <p class="api-notice">※ API 키 없이도 영문 기사 원문은 표시되나 번역·분석은 제공되지 않습니다.</p>
+  </div>
+
+  <!-- 기사 탭 -->
+  <div class="article-tabs" id="article-tabs"></div>
+
+  <!-- 메인 2단 레이아웃 -->
+  <div class="content-area">
+
+    <!-- 왼쪽: 기사 -->
+    <div class="article-panel">
+      <div class="panel-header">
+        <span>📰 ARTICLE · 원문 &amp; 해석</span>
+        <span>✏️</span>
+      </div>
+      <div class="panel-body" id="article-panel">
+        <div class="loading">
+          <div class="spinner">⌛</div>
+          <p style="margin-top:12px">오른쪽 상단 <strong>'기사 불러오기'</strong>를 누르세요</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 오른쪽: 학습 -->
+    <div class="study-panel">
+      <div class="panel-header" style="background:#1a4a2e">
+        <span>📚 STUDY · 단어 · 문법 · 숙어 · 표현</span>
+        <span>🖊️</span>
+      </div>
+      <div class="study-body" id="study-panel">
+        <div class="study-empty">
+          <div class="big-icon">📖</div>
+          <p>기사를 불러오면<br>학습 내용이 여기 표시됩니다</p>
+          <p style="font-size:0.8rem;margin-top:8px;color:#b0a090">
+            단어 · 문법 · 숙어 분석은<br>Gemini API 키 설정 시 제공됩니다
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ================================================================
+// 전역 변수
+// ================================================================
+const PROXY   = 'https://api.allorigins.win/get?url=';
+const KT_URL  = 'https://www.koreatimes.co.kr/?edition=south-korea';
+const KT_HOST = 'https://www.koreatimes.co.kr';
+
+let articles       = [];
+let currentIdx     = 0;
+let cachedAnalysis = {};
+
+// ================================================================
+// 초기화
+// ================================================================
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('today-date').textContent =
+    new Date().toLocaleDateString('ko-KR', {
+      year: 'numeric', month: 'long', day: 'numeric', weekday: 'short'
+    });
+
+  // 저장된 API 키 없으면 설정창 열기
+  if (!localStorage.getItem('gemini_api_key')) showApiSetup();
+
+  // 오늘 캐시 확인
+  const cached = localStorage.getItem('articles_' + getTodayKey());
+  if (cached) {
+    try {
+      articles = JSON.parse(cached);
+      renderTabs();
+      restoreOrLoad(0);
+      return;
+    } catch (e) {}
+  }
+
+  // 오전 8시 이후면 자동 로드
+  if (new Date().getHours() >= 8) loadArticles();
+});
+
+function getTodayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+}
+
+// ================================================================
+// API 키 관리
+// ================================================================
+function showApiSetup() {
+  const box = document.getElementById('api-setup-box');
+  box.classList.toggle('hidden');
+  const saved = localStorage.getItem('gemini_api_key');
+  if (saved) document.getElementById('api-key-input').value = saved;
+}
+
+function saveApiKey() {
+  const val = document.getElementById('api-key-input').value.trim();
+  if (val && !val.startsWith('AIza')) {
+    alert('올바른 Gemini API 키를 입력하세요. (AIza로 시작)');
+    return;
+  }
+  if (val) {
+    localStorage.setItem('gemini_api_key', val);
+    alert('✅ Gemini API 키가 저장되었습니다.');
+  }
+  document.getElementById('api-setup-box').classList.add('hidden');
+}
+
+function clearApiKey() {
+  localStorage.removeItem('gemini_api_key');
+  document.getElementById('api-key-input').value = '';
+  alert('🗑 API 키가 삭제되었습니다.');
+}
+
+function getApiKey() {
+  return localStorage.getItem('gemini_api_key') || '';
+}
+
+// ================================================================
+// 기사 목록 불러오기
+// ================================================================
+async function loadArticles() {
+  setArticlePanel(`<div class="loading"><div class="spinner">⌛</div><p style="margin-top:12px">최신 기사 가져오는 중...</p></div>`);
+  setStudyPanel(`<div class="study-empty"><div class="big-icon">⌛</div><p>잠시만 기다려주세요</p></div>`);
+
+  try {
+    const html = await fetchViaProxy(KT_URL);
+    const doc  = new DOMParser().parseFromString(html, 'text/html');
+
+    const seen  = new Set();
+    const found = [];
+    for (const a of doc.querySelectorAll('a[href]')) {
+      const rawHref = a.getAttribute('href') || '';
+      const href    = rawHref.startsWith('http') ? rawHref : KT_HOST + rawHref;
+      const text    = a.textContent.trim().replace(/\s+/g, ' ');
+      if (
+        href.includes('koreatimes.co.kr') &&
+        /\/\d{8}\//.test(href) &&
+        !href.includes('edition=') &&
+        text.length > 15 &&
+        !seen.has(href)
+      ) {
+        seen.add(href);
+        found.push({ href, title: text });
+      }
+    }
+
+    if (found.length === 0) throw new Error('기사 링크를 찾을 수 없습니다.');
+
+    articles = found.slice(0, 3);
+    localStorage.setItem('articles_' + getTodayKey(), JSON.stringify(articles));
+
+    renderTabs();
+    await loadArticle(0);
+
+  } catch (err) {
+    setArticlePanel(`
+      <div class="error-box">
+        <p>⚠️ 기사를 불러오지 못했습니다</p>
+        <p style="font-size:0.8rem;margin-top:6px;opacity:0.8">${err.message}</p>
+        <button class="btn btn-primary" style="margin-top:14px" onclick="loadArticles()">다시 시도</button>
+      </div>`);
+  }
+}
+
+// ================================================================
+// 탭 렌더링
+// ================================================================
+function renderTabs() {
+  document.getElementById('article-tabs').innerHTML =
+    articles.map((a, i) =>
+      `<button class="tab-btn${i===0?' active':''}" onclick="switchTab(${i})" title="${escHtml(a.title)}">
+         📄 기사 ${i+1}
+       </button>`
+    ).join('');
+}
+
+function switchTab(idx) {
+  currentIdx = idx;
+  document.querySelectorAll('.tab-btn').forEach((b, i) =>
+    b.classList.toggle('active', i === idx)
+  );
+  restoreOrLoad(idx);
+}
+
+async function restoreOrLoad(idx) {
+  const art      = articles[idx];
+  const cacheKey = 'cache_' + btoa(encodeURIComponent(art.href)).substring(0, 24);
+  const cached   = cachedAnalysis[art.href] ||
+    (() => { try { return JSON.parse(localStorage.getItem(cacheKey) || 'null'); } catch { return null; } })();
+
+  if (cached?.paragraphs?.length) {
+    renderArticlePanel(cached);
+    renderStudyPanel(cached.analysis);
+  } else {
+    await loadArticle(idx);
+  }
+}
+
+// ================================================================
+// 단일 기사 불러오기 + Gemini 분석
+// ================================================================
+async function loadArticle(idx) {
+  const art = articles[idx];
+  setArticlePanel(`<div class="loading"><div class="spinner">⌛</div><p style="margin-top:12px">기사 로딩 중…</p></div>`);
+  setStudyPanel(`<div class="study-empty"><div class="big-icon">🔍</div><p>기사 분석 준비 중…</p></div>`);
+
+  try {
+    const html = await fetchViaProxy(art.href);
+    const doc  = new DOMParser().parseFromString(html, 'text/html');
+
+    const title = doc.querySelector('h1')?.textContent?.trim() || art.title;
+
+    const author = (() => {
+      for (const sel of ['[class*="author"]', '.byline a', '[rel="author"]']) {
+        const el = doc.querySelector(sel);
+        if (el?.textContent?.trim()) return el.textContent.trim();
+      }
+      return 'The Korea Times';
+    })();
+
+    const date = (() => {
+      for (const sel of ['time', '[class*="date"]', '[class*="published"]']) {
+        const el = doc.querySelector(sel);
+        if (el?.textContent?.trim()) return el.textContent.trim().replace(/\s+/g,' ');
+      }
+      return '';
+    })();
+
+    // 본문 단락 추출
+    let paragraphs = [];
+    const bodyEl = doc.querySelector(
+      '[class*="EditorContents"], [class*="article-body"], [class*="article-content"], [class*="story-body"]'
+    );
+    if (bodyEl) {
+      paragraphs = [...bodyEl.querySelectorAll('p')]
+        .map(p => p.textContent.trim())
+        .filter(t => t.length > 40);
+    }
+    if (paragraphs.length === 0) {
+      paragraphs = [...doc.querySelectorAll('p')]
+        .map(p => p.textContent.trim())
+        .filter(t => t.length > 80 && !t.startsWith('©') && !t.includes('Korea Times photo'))
+        .slice(0, 12);
+    }
+    if (paragraphs.length === 0) throw new Error('본문을 추출할 수 없습니다.');
+
+    const articleData = { href: art.href, title, author, date, paragraphs };
+
+    // Gemini 분석
+    let analysis = null;
+    const apiKey = getApiKey();
+    if (apiKey) {
+      setStudyPanel(`<div class="study-empty"><div class="big-icon">🤖</div><p>Gemini AI 분석 중…<br><small>잠시만 기다려주세요</small></p></div>`);
+      try {
+        analysis = await analyzeWithGemini(title, paragraphs.join('\n\n'), apiKey);
+      } catch (e) {
+        console.warn('Gemini 분석 실패:', e.message);
+      }
+    }
+
+    // 캐시 저장
+    const payload  = { ...articleData, analysis };
+    cachedAnalysis[art.href] = payload;
+    const cacheKey = 'cache_' + btoa(encodeURIComponent(art.href)).substring(0, 24);
+    try { localStorage.setItem(cacheKey, JSON.stringify(payload)); } catch (e) {}
+
+    renderArticlePanel(payload);
+    renderStudyPanel(analysis);
+
+  } catch (err) {
+    setArticlePanel(`
+      <div class="error-box">
+        <p>⚠️ ${escHtml(err.message)}</p>
+        <button class="btn btn-primary" style="margin-top:12px" onclick="loadArticle(${idx})">다시 시도</button>
+      </div>`);
+  }
+}
+
+// ================================================================
+// CORS 프록시 fetch
+// ================================================================
+async function fetchViaProxy(url) {
+  const res = await fetch(PROXY + encodeURIComponent(url));
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  if (!data.contents) throw new Error('프록시 응답이 비어있습니다');
+  return data.contents;
+}
+
+// ================================================================
+// Gemini API 분석 (gemini-2.0-flash)
+// ================================================================
+async function analyzeWithGemini(title, text, apiKey) {
+  const prompt = `You are an expert English teacher for Korean learners.
+Analyze this English news article and return ONLY valid JSON (no markdown, no code block).
+
+Article title: "${title}"
+
+Article text:
+${text.substring(0, 3500)}
+
+Return exactly this JSON structure:
+{
+  "title_kr": "기사 제목의 자연스러운 한국어 번역",
+  "paragraphs_kr": ["각 문단의 자연스러운 한국어 번역 (순서 동일, 문단 수 맞출 것)"],
+  "vocabulary": [
+    {
+      "word": "단어 또는 구",
+      "phonetic": "/발음기호/ 선택사항",
+      "pos": "품사 (n./v./adj./adv./phr. 등)",
+      "def_kr": "한국어 뜻",
+      "example": "기사에서 가져온 예문",
+      "example_kr": "예문 한국어 번역"
+    }
+  ],
+  "grammar": [
+    {
+      "title": "문법 포인트 이름 (한국어)",
+      "example": "기사에서 가져온 예문",
+      "highlight": "예문 중 핵심 문법 부분만",
+      "explain_kr": "문법 설명 (한국어, 2~4문장)"
+    }
+  ],
+  "idioms": [
+    {
+      "phrase": "숙어 또는 관용구",
+      "meaning_kr": "뜻 (한국어)",
+      "example": "기사에서 가져온 예문",
+      "example_kr": "한국어 번역"
+    }
+  ],
+  "slang": [
+    {
+      "word": "은어·구어·뉴스 전문용어",
+      "badge": "분류 태그 (뉴스 용어 / 구어 / 비즈니스 중 하나)",
+      "meaning_kr": "뜻과 사용 맥락 설명 (한국어)"
+    }
+  ]
+}
+
+Rules:
+- vocabulary: 5~8개, 난이도 있는 단어 위주
+- grammar: 2~3개, 한국인이 틀리기 쉬운 문법 포인트
+- idioms: 2~4개, 실용적인 숙어·관용표현
+- slang: 0~3개, 없으면 빈 배열 []
+- paragraphs_kr 배열 길이는 실제 문단 수와 동일하게`;
+
+  const endpoint =
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+generationConfig: {
+        temperature: 0.3,
+        responseMimeType: 'application/json'
+      }
+    })
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error?.message || `Gemini API 오류 ${res.status}`);
+  }
+
+  const result = await res.json();
+  const raw    = result.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!raw) throw new Error('Gemini 응답이 비어있습니다.');
+
+  // 혹시 마크다운 코드블록이 붙어 있으면 제거
+  const cleaned = raw.replace(/^```json\s*/i, '').replace(/\s*```$/,'').trim();
+  return JSON.parse(cleaned);
+}
+
+// ================================================================
+// 기사 패널 렌더링 (왼쪽)
+// ================================================================
+function renderArticlePanel(data) {
+  const { href, title, author, date, paragraphs, analysis } = data;
+  const titleKr = analysis?.title_kr || '';
+  const parasKr = analysis?.paragraphs_kr || [];
+
+  let html = `
+    <div class="article-title-en">${escHtml(title)}</div>
+    ${titleKr ? `<div class="article-title-kr">🇰🇷 ${escHtml(titleKr)}</div>` : ''}
+    <div class="article-meta">
+      <span>✍️ ${escHtml(author)}</span>
+      ${date ? `<span>📅 ${escHtml(date.substring(0, 40))}</span>` : ''}
+      <span>📰 The Korea Times</span>
+    </div>
+  `;
+
+  paragraphs.forEach((para, i) => {
+    const kr = parasKr[i] || '';
+    html += `
+      <div class="para-block">
+        <div class="para-en">${escHtml(para)}</div>
+        ${kr ? `
+          <div class="para-kr">
+            <div class="para-kr-label">한국어 해석</div>
+            ${escHtml(kr)}
+          </div>` : ''}
+      </div>`;
+  });
+
+  html += `
+    <div style="margin-top:10px">
+      <a href="${escHtml(href)}" target="_blank" rel="noopener" class="source-link">
+        🔗 원문 기사 보기 (Korea Times)
+      </a>
+    </div>`;
+
+  setArticlePanel(html);
+}
+
+// ================================================================
+// 학습 패널 렌더링 (오른쪽)
+// ================================================================
+function renderStudyPanel(analysis) {
+  if (!analysis) {
+    const hasKey = !!getApiKey();
+    setStudyPanel(`
+      <div class="study-empty">
+        <div class="big-icon">📖</div>
+        <p>${hasKey
+          ? 'AI 분석에 실패했습니다.<br>기사를 다시 불러오세요.'
+          : 'Gemini API 키를 설정하면<br>단어·문법·숙어 분석이 제공됩니다.'
+        }</p>
+        ${!hasKey ? `<button class="btn btn-secondary" style="margin-top:16px" onclick="showApiSetup()">⚙️ API 키 설정하기</button>` : ''}
+      </div>`);
+    return;
+  }
+
+  let html = '';
+
+  // ── 📝 핵심 단어 ──
+  if (analysis.vocabulary?.length) {
+    html += buildSection('📝 핵심 단어 &amp; 표현', analysis.vocabulary.map(v => `
+      <div class="word-card">
+        <div class="wc-head">
+          <span class="wc-word">${escHtml(v.word)}</span>
+          ${v.phonetic ? `<span class="wc-ph">${escHtml(v.phonetic)}</span>` : ''}
+          ${v.pos      ? `<span class="wc-pos">${escHtml(v.pos)}</span>`      : ''}
+        </div>
+        <div class="wc-def">▸ ${escHtml(v.def_kr)}</div>
+        ${v.example ? `
+          <div class="wc-ex">${escHtml(v.example)}</div>
+          ${v.example_kr ? `<div class="wc-ex-kr">→ ${escHtml(v.example_kr)}</div>` : ''}
+        ` : ''}
+      </div>`).join(''));
+  }
+
+  // ── 📐 문법 포인트 ──
+  if (analysis.grammar?.length) {
+    html += buildSection('📐 주요 문법 포인트', analysis.grammar.map(g => {
+      // 핵심 구문에 형광펜 효과
+      let exHtml = escHtml(g.example);
+      if (g.highlight) {
+        exHtml = exHtml.replace(escHtml(g.highlight),
+          `<span class="gram-hl">${escHtml(g.highlight)}</span>`);
+      }
+      return `
+        <div class="gram-card">
+          <div class="gram-title">📌 ${escHtml(g.title)}</div>
+          <div class="gram-ex">${exHtml}</div>
+          <div class="gram-exp">${escHtml(g.explain_kr)}</div>
+        </div>`;
+    }).join(''));
+  }
+
+  // ── 💬 숙어 & 관용표현 ──
+  if (analysis.idioms?.length) {
+    html += buildSection('💬 숙어 &amp; 관용표현', analysis.idioms.map(id => `
+      <div class="idiom-card">
+        <div class="idiom-phrase">"${escHtml(id.phrase)}"</div>
+        <div class="idiom-mean">▸ ${escHtml(id.meaning_kr)}</div>
+        ${id.example ? `
+          <div class="idiom-ex">${escHtml(id.example)}</div>
+          ${id.example_kr ? `<div class="idiom-ex-kr">→ ${escHtml(id.example_kr)}</div>` : ''}
+        ` : ''}
+      </div>`).join(''));
+  }
+
+  // ── 🗣 은어 & 뉴스 전문용어 ──
+  if (analysis.slang?.length) {
+    html += buildSection('🗣 은어 &amp; 뉴스 전문용어', analysis.slang.map(s => `
+      <div class="slang-card">
+        <div class="slang-head">
+          <span class="slang-word">${escHtml(s.word)}</span>
+          ${s.badge ? `<span class="slang-badge">${escHtml(s.badge)}</span>` : ''}
+        </div>
+        <div class="slang-mean">${escHtml(s.meaning_kr)}</div>
+      </div>`).join(''));
+  }
+
+  if (!html) {
+    html = `<div class="study-empty"><p>분석 결과가 없습니다.</p></div>`;
+  }
+
+  setStudyPanel(html);
+}
+
+// ================================================================
+// 유틸 함수
+// ================================================================
+function buildSection(title, innerHtml) {
+  return `
+    <div class="s-section">
+      <div class="s-title" onclick="toggleSection(this)">
+        <span>${title}</span>
+        <span class="arr">▾</span>
+      </div>
+      <div class="s-body">${innerHtml}</div>
+    </div>`;
+}
+
+function toggleSection(titleEl) {
+  titleEl.classList.toggle('collapsed');
+  titleEl.nextElementSibling.classList.toggle('hidden');
+}
+
+function setArticlePanel(html) {
+  document.getElementById('article-panel').innerHTML = html;
+}
+
+function setStudyPanel(html) {
+  document.getElementById('study-panel').innerHTML = html;
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// ================================================================
+// 매일 오전 8시 자동 새로고침 타이머
+// ================================================================
+function scheduleNext8am() {
+  const now  = new Date();
+  const next = new Date(now);
+  next.setHours(8, 0, 5, 0);
+  if (next <= now) next.setDate(next.getDate() + 1);
+  const msUntil = next - now;
+  console.log(`⏰ 다음 자동 갱신: ${next.toLocaleString('ko-KR')} (${Math.round(msUntil / 60000)}분 후)`);
+
+  setTimeout(() => {
+    // 날짜 배지 갱신
+    document.getElementById('today-date').textContent =
+      new Date().toLocaleDateString('ko-KR', {
+        year: 'numeric', month: 'long', day: 'numeric', weekday: 'short'
+      });
+    // 캐시 초기화 후 새 기사 로드
+    articles       = [];
+    cachedAnalysis = {};
+    loadArticles();
+    scheduleNext8am(); // 다음 날 예약
+  }, msUntil);
+}
+
+scheduleNext8am();
+</script>
+</body>
+</html>
