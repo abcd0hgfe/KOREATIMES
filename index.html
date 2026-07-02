@@ -52,7 +52,6 @@
       padding: 0 28px 100px 88px; position: relative; z-index: 1;
     }
 
-    /* 헤더 */
     header {
       padding: 32px 0 20px; border-bottom: 2px solid var(--border);
       margin-bottom: 22px; display: flex; align-items: flex-end;
@@ -70,9 +69,9 @@
       padding: 8px 16px; border-radius: 3px; border: 1.5px solid transparent;
       font-size: 0.82rem; cursor: pointer; font-family: inherit; font-weight: 700; transition: all 0.18s;
     }
-    .btn-red   { background: var(--accent);  color: #fff; border-color: var(--accent); }
+    .btn-red   { background: var(--accent);  color:#fff; border-color: var(--accent); }
     .btn-red:hover   { background: #b84428; }
-    .btn-green { background: var(--accent3); color: #fff; border-color: var(--accent3); }
+    .btn-green { background: var(--accent3); color:#fff; border-color: var(--accent3); }
     .btn-green:hover { background: #3a6a3a; }
     .btn-ghost { background: transparent; color: var(--muted); border-color: var(--border); }
     .btn-ghost:hover { background: rgba(180,160,120,0.12); color: var(--ink); }
@@ -83,7 +82,6 @@
     }
     .btn-save:hover, .btn-save.saved { background: #e0c060; color: #fff; }
 
-    /* API 박스 */
     .api-box {
       background: #fff8ec; border: 1.5px solid #e8d090; border-radius: 4px;
       padding: 18px 22px; margin-bottom: 20px;
@@ -99,7 +97,6 @@
     }
     .api-note { margin-top: 8px; font-size: 0.76rem; color: #b0a080; }
 
-    /* 상단 탭 */
     .top-tabs { display: flex; border-bottom: 2px solid var(--border); }
     .top-tab {
       padding: 10px 24px; font-size: 0.84rem; font-weight: 700; color: var(--muted);
@@ -116,14 +113,13 @@
       font-size: 0.65rem; padding: 1px 6px; border-radius: 10px; margin-left: 5px;
     }
 
-    /* 기사 서브탭 */
     .art-tabs { display: flex; gap: 6px; padding: 14px 0 0; flex-wrap: wrap; }
     .art-tab {
       padding: 7px 18px; border: 1.5px solid var(--border); border-bottom: none;
       background: rgba(180,160,120,0.07); border-radius: 4px 4px 0 0;
       font-size: 0.82rem; color: var(--muted); cursor: pointer;
       font-family: inherit; font-weight: 700; transition: all 0.15s;
-      max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .art-tab:hover { background: rgba(180,160,120,0.15); }
     .art-tab.active {
@@ -131,7 +127,6 @@
       position: relative; bottom: -2px; z-index: 2;
     }
 
-    /* 2단 레이아웃 */
     .content-area {
       display: grid; grid-template-columns: 1fr 1fr;
       border: 1.5px solid var(--border); border-radius: 0 4px 4px 4px;
@@ -151,7 +146,6 @@
     .study-panel .p-header { background: var(--panel-r); color: #a8c8a8; }
     .study-body  { overflow-y: auto; flex: 1; max-height: calc(78vh - 44px); }
 
-    /* 기사 내용 */
     .art-title-en {
       font-family: 'Playfair Display', serif; font-size: 1.35rem;
       color: var(--ink); line-height: 1.4; margin-bottom: 6px;
@@ -196,7 +190,6 @@
     }
     .src-link:hover { background: var(--accent); color: white; }
 
-    /* 학습 섹션 */
     .s-sec { border-bottom: 1px dashed rgba(180,160,120,0.4); }
     .s-sec:last-child { border-bottom: none; }
     .s-hd {
@@ -266,7 +259,6 @@
       padding: 20px; text-align: center; color: var(--accent); margin: 20px;
     }
 
-    /* 저장함 */
     .saves-wrap {
       border: 1.5px solid var(--border); border-top: none;
       border-radius: 0 4px 4px 4px; min-height: 60vh;
@@ -278,37 +270,18 @@
     .save-list { display: flex; flex-direction: column; gap: 12px; }
     .save-card {
       background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 4px;
-      padding: 14px 18px; transition: all 0.18s;
-      box-shadow: 2px 2px 0 rgba(0,0,0,0.04);
+      padding: 14px 18px; transition: all 0.18s; box-shadow: 2px 2px 0 rgba(0,0,0,0.04);
       display: flex; align-items: flex-start; gap: 14px;
     }
     .save-card:hover { border-color: var(--accent2); box-shadow: 3px 3px 0 rgba(58,106,138,0.15); transform: translateX(2px); }
     .save-card-l { flex: 1; min-width: 0; }
     .save-card-r { flex-shrink: 0; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-    .sv-date {
-      font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted);
-      background: rgba(180,160,120,0.13); padding: 2px 8px; border-radius: 2px;
-    }
-    .sv-title {
-      font-family: 'Playfair Display', serif; font-size: 0.97rem; font-weight: 700;
-      color: var(--ink); margin: 5px 0 6px; line-height: 1.35;
-      overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-    }
-    .sv-sum {
-      font-size: 0.8rem; color: var(--muted); line-height: 1.6;
-      overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-    }
-    .sv-open {
-      font-size: 0.72rem; color: var(--accent2); border: 1px solid var(--accent2);
-      background: transparent; padding: 3px 8px; border-radius: 2px;
-      cursor: pointer; font-family: inherit; transition: all 0.15s;
-    }
+    .sv-date { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--muted); background: rgba(180,160,120,0.13); padding: 2px 8px; border-radius: 2px; }
+    .sv-title { font-family: 'Playfair Display', serif; font-size: 0.97rem; font-weight: 700; color: var(--ink); margin: 5px 0 6px; line-height: 1.35; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .sv-sum { font-size: 0.8rem; color: var(--muted); line-height: 1.6; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    .sv-open { font-size: 0.72rem; color: var(--accent2); border: 1px solid var(--accent2); background: transparent; padding: 3px 8px; border-radius: 2px; cursor: pointer; font-family: inherit; transition: all 0.15s; }
     .sv-open:hover { background: var(--accent2); color: white; }
-    .sv-del {
-      font-size: 0.72rem; color: #c08080; border: 1px solid #e0c0c0;
-      background: transparent; padding: 3px 8px; border-radius: 2px;
-      cursor: pointer; font-family: inherit; transition: all 0.15s;
-    }
+    .sv-del  { font-size: 0.72rem; color: #c08080; border: 1px solid #e0c0c0; background: transparent; padding: 3px 8px; border-radius: 2px; cursor: pointer; font-family: inherit; transition: all 0.15s; }
     .sv-del:hover { background: #c05050; color: white; border-color: #c05050; }
 
     @media (max-width: 860px) {
@@ -358,7 +331,6 @@
     <button class="top-tab"        id="tt-saved" onclick="switchTop('saved')">🔖 저장된 기사 <span class="badge" id="save-cnt">0</span></button>
   </div>
 
-  <!-- 오늘의 기사 뷰 -->
   <div id="view-news">
     <div class="art-tabs" id="art-tabs"></div>
     <div class="content-area">
@@ -381,7 +353,6 @@
     </div>
   </div>
 
-  <!-- 저장된 기사 뷰 -->
   <div id="view-saved" class="hidden">
     <div class="saves-wrap" id="saves-view"></div>
   </div>
@@ -389,13 +360,15 @@
 
 <script>
 // ================================================================
-// 상수
+// 상수 — allorigins 프록시 사용 (GitHub Pages CORS 우회)
 // ================================================================
-const RSS_URL = 'https://www.koreatimes.co.kr/www/rss/rss.xml';
+const RSS_URL     = 'https://feed.koreatimes.co.kr/k/allnews.xml';
+const PROXY_GET   = 'https://api.allorigins.win/get?url=';   // RSS용 (JSON 래핑)
+const PROXY_RAW   = 'https://api.allorigins.win/raw?url=';   // 기사 본문용 (HTML 직접)
 
-let articles     = [];   // [{href, title, pubDate, description}]
+let articles     = [];
 let currentIdx   = 0;
-let sessionCache = {};   // href → payload
+let sessionCache = {};
 
 // ================================================================
 // 초기화
@@ -407,7 +380,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!localStorage.getItem('gemini_key')) showApiSetup();
   updateBadge();
 
-  // 오늘 캐시 확인
   const cached = localStorage.getItem('arts_' + dayKey());
   if (cached) {
     try {
@@ -415,7 +387,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (articles.length) { renderTabs(); restoreOrLoad(0); return; }
     } catch(e) {}
   }
-
   if (new Date().getHours() >= 8) loadArticles();
 });
 
@@ -439,8 +410,7 @@ function switchTop(tab) {
 // API 키
 // ================================================================
 function showApiSetup() {
-  const box = document.getElementById('api-box');
-  box.classList.toggle('hidden');
+  document.getElementById('api-box').classList.toggle('hidden');
   const k = localStorage.getItem('gemini_key');
   if (k) document.getElementById('api-inp').value = k;
 }
@@ -458,29 +428,30 @@ function clearKey() {
 function getKey() { return localStorage.getItem('gemini_key') || ''; }
 
 // ================================================================
-// RSS로 기사 목록 불러오기 (CORS 허용됨)
+// RSS로 기사 목록 불러오기
+// allorigins/get → JSON { contents: "xml문자열" }
 // ================================================================
 async function loadArticles() {
   setArt(`<div class="center-msg"><div class="ico spin">⌛</div><p>최신 기사 가져오는 중…</p></div>`);
   setStudy(`<div class="center-msg"><div class="ico">⏳</div><p>잠시만 기다려주세요</p></div>`);
 
   try {
-    const res = await fetch(RSS_URL, { credentials: 'omit' });
-    if (!res.ok) throw new Error(`RSS 응답 오류: HTTP ${res.status}`);
-    const text = await res.text();
-    const xml  = new DOMParser().parseFromString(text, 'text/xml');
+    const res  = await fetch(PROXY_GET + encodeURIComponent(RSS_URL), { signal: AbortSignal.timeout(15000) });
+    if (!res.ok) throw new Error(`프록시 응답 오류: HTTP ${res.status}`);
+    const data = await res.json();
+    if (!data.contents) throw new Error('RSS 내용을 가져오지 못했습니다.');
 
+    const xml   = new DOMParser().parseFromString(data.contents, 'text/xml');
     const items = [...xml.querySelectorAll('item')];
     if (!items.length) throw new Error('RSS에서 기사를 찾을 수 없습니다.');
 
-    const seen = new Set();
+    const seen  = new Set();
     const found = [];
     for (const item of items) {
-      // utm 파라미터 제거
-      const href = (item.querySelector('link')?.textContent?.trim() || '').split('?')[0];
-      const title = item.querySelector('title')?.textContent?.trim() || '';
+      const href    = (item.querySelector('link')?.textContent?.trim() || '').split('?')[0];
+      const title   = item.querySelector('title')?.textContent?.trim() || '';
       const pubDate = item.querySelector('pubDate')?.textContent?.trim() || '';
-      const desc = item.querySelector('description')?.textContent?.trim() || '';
+      const desc    = item.querySelector('description')?.textContent?.trim() || '';
       if (!href || !title || seen.has(href)) continue;
       seen.add(href);
       found.push({ href, title, pubDate, description: desc });
@@ -509,7 +480,7 @@ function renderTabs() {
   document.getElementById('art-tabs').innerHTML =
     articles.map((a,i) =>
       `<button class="art-tab${i===0?' active':''}" onclick="switchArt(${i})" title="${escH(a.title)}">
-         📄 ${escH(a.title.length > 28 ? a.title.substring(0,28)+'…' : a.title)}
+         📄 ${escH(a.title.length > 30 ? a.title.substring(0,30)+'…' : a.title)}
        </button>`
     ).join('');
 }
@@ -523,13 +494,11 @@ function switchArt(idx) {
 async function restoreOrLoad(idx) {
   const art = articles[idx];
   if (!art) return;
-  // 메모리 캐시
   if (sessionCache[art.href]?.paragraphs?.length) {
     renderArt(sessionCache[art.href]);
     renderStudy(sessionCache[art.href].analysis);
     return;
   }
-  // localStorage 캐시
   try {
     const stored = JSON.parse(localStorage.getItem(ck(art.href)) || 'null');
     if (stored?.paragraphs?.length) {
@@ -541,7 +510,8 @@ async function restoreOrLoad(idx) {
 }
 
 // ================================================================
-// 기사 본문 로드 (직접 fetch — 기사 페이지는 CORS 허용됨)
+// 기사 본문 로드
+// allorigins/raw → HTML 직접 반환
 // ================================================================
 async function loadArticle(idx) {
   const art = articles[idx];
@@ -549,42 +519,37 @@ async function loadArticle(idx) {
   setStudy(`<div class="center-msg"><div class="ico">🔍</div><p>잠시만 기다려주세요</p></div>`);
 
   try {
-    const res = await fetch(art.href, { credentials: 'omit' });
+    const res  = await fetch(PROXY_RAW + encodeURIComponent(art.href), { signal: AbortSignal.timeout(20000) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const html = await res.text();
     const doc  = new DOMParser().parseFromString(html, 'text/html');
 
     const title  = doc.querySelector('h1')?.textContent?.trim() || art.title;
     const date   = doc.querySelector('time')?.textContent?.trim() || art.pubDate || '';
-
-    // 저자 추출
-    let author = 'The Korea Times';
+    let   author = 'The Korea Times';
     for (const sel of ['[class*="author"]','[class*="Author"]','.byline','[rel="author"]']) {
-      const el = doc.querySelector(sel);
-      const t  = el?.textContent?.trim();
-      if (t && t.length < 60) { author = t; break; }
+      const t = doc.querySelector(sel)?.textContent?.trim();
+      if (t && t.length < 80) { author = t; break; }
     }
 
-    // 본문 추출 — EditorContents_wrap 우선
+    // 본문 추출
     let paragraphs = [];
-    const bodyEl = doc.querySelector('[class*="EditorContents_wrap"], [class*="EditorContents_contents"]');
+    const bodyEl = doc.querySelector('[class*="EditorContents_wrap"],[class*="EditorContents_contents"]');
     if (bodyEl) {
       paragraphs = [...bodyEl.querySelectorAll('p')]
         .map(p => p.textContent.trim())
         .filter(t => t.length > 40 && !t.includes('Korea Times photo'));
     }
-    // 폴백
     if (!paragraphs.length) {
-      paragraphs = [...doc.querySelectorAll('article p, .article p, main p')]
+      paragraphs = [...doc.querySelectorAll('article p, .article p, main p, [class*="content"] p')]
         .map(p => p.textContent.trim())
-        .filter(t => t.length > 60)
+        .filter(t => t.length > 60 && !t.startsWith('©'))
         .slice(0, 15);
     }
-if (!paragraphs.length) throw new Error('본문을 추출할 수 없습니다.');
+    if (!paragraphs.length) throw new Error('본문을 추출할 수 없습니다.');
 
     const payload = { href: art.href, title, author, date, paragraphs, analysis: null };
 
-    // Gemini 분석
     const key = getKey();
     if (key) {
       setStudy(`<div class="center-msg"><div class="ico">🤖</div><p>Gemini AI 분석 중…<br><small style="color:#b0a080">잠시만 기다려주세요</small></p></div>`);
@@ -686,12 +651,12 @@ function renderArt(data) {
     ${titleKr ? `<div class="art-title-kr">🇰🇷 ${escH(titleKr)}</div>` : ''}
     <div class="art-meta">
       <span>✍ ${escH(author)}</span>
-      ${date ? `<span>${escH(date.substring(0, 40))}</span>` : ''}
+      ${date ? `<span>${escH(date.substring(0,40))}</span>` : ''}
       <span>The Korea Times</span>
     </div>
     <div class="art-toolbar">
       <a href="${escH(href)}" target="_blank" rel="noopener" class="src-link">↗ 원문 보기</a>
-      <button class="btn-save${isSaved ? ' saved' : ''}" id="save-btn" onclick="toggleSave('${escH(href)}')">
+      <button class="btn-save${isSaved?' saved':''}" id="save-btn" onclick="toggleSave('${escH(href)}')">
         ${isSaved ? '🔖 저장됨' : '💾 저장'}
       </button>
     </div>`;
@@ -813,18 +778,16 @@ function updateBadge() {
 }
 
 function toggleSave(href) {
-  const list  = getSaves();
-  const idx   = list.findIndex(s => s.href === href);
-  const data  = sessionCache[href];
+  const list = getSaves();
+  const idx  = list.findIndex(s => s.href === href);
+  const data = sessionCache[href];
 
   if (idx !== -1) {
-    // 저장 해제
     list.splice(idx, 1);
     setSaves(list);
     const btn = document.getElementById('save-btn');
     if (btn) { btn.textContent = '💾 저장'; btn.classList.remove('saved'); }
   } else {
-    // 저장
     if (!data) return;
     list.unshift({
       href,
@@ -859,9 +822,8 @@ function renderSaves() {
   }
 
   const fmtDate = iso => {
-    try {
-      return new Date(iso).toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' });
-    } catch { return iso; }
+    try { return new Date(iso).toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' }); }
+    catch { return iso; }
   };
 
   el.innerHTML = `
@@ -890,7 +852,6 @@ function openSaved(i) {
     const payload = JSON.parse(localStorage.getItem(item.cacheKey) || 'null');
     if (payload?.paragraphs?.length) {
       sessionCache[item.href] = payload;
-
       if (!articles.some(a => a.href === item.href)) {
         articles.unshift({ href: item.href, title: item.title });
         if (articles.length > 3) articles = articles.slice(0, 3);
@@ -898,11 +859,10 @@ function openSaved(i) {
         currentIdx = 0;
       } else {
         currentIdx = articles.findIndex(a => a.href === item.href);
-        document.querySelectorAll('.art-tab').forEach((b, j) =>
+        document.querySelectorAll('.art-tab').forEach((b,j) =>
           b.classList.toggle('active', j === currentIdx)
         );
       }
-
       switchTop('news');
       renderArt(payload);
       renderStudy(payload.analysis);
@@ -911,15 +871,14 @@ function openSaved(i) {
     }
   } catch(e) {}
 
-  // 캐시 없으면 새로 로드
   if (!articles.some(a => a.href === item.href)) {
     articles.unshift({ href: item.href, title: item.title });
     if (articles.length > 3) articles = articles.slice(0, 3);
     renderTabs();
   }
   switchTop('news');
-  currentIdx = articles.findIndex(a => a.href === item.href);
-  loadArticle(Math.max(0, currentIdx));
+  currentIdx = Math.max(0, articles.findIndex(a => a.href === item.href));
+  loadArticle(currentIdx);
 }
 
 function delSaved(i, e) {
@@ -953,8 +912,8 @@ function ck(href)       { return 'art_' + btoa(encodeURIComponent(href)).substri
 function escH(s) {
   if (!s) return '';
   return String(s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 // ================================================================
@@ -966,7 +925,7 @@ function scheduleNext8am() {
   next.setHours(8, 0, 5, 0);
   if (next <= now) next.setDate(next.getDate() + 1);
   const ms = next - now;
-  console.log(`⏰ 다음 자동 갱신: ${next.toLocaleString('ko-KR')} (${Math.round(ms / 60000)}분 후)`);
+  console.log(`⏰ 다음 자동 갱신: ${next.toLocaleString('ko-KR')} (${Math.round(ms/60000)}분 후)`);
   setTimeout(() => {
     document.getElementById('today-date').textContent =
       new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'short' });
